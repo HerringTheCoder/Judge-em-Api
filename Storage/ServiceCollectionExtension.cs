@@ -1,7 +1,7 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Storage.Repositories;
+using Storage.Repositories.Interfaces;
 
 namespace Storage
 {
@@ -14,6 +14,10 @@ namespace Storage
                 {
                     options.UseSqlServer(connectionString);
                 });
+
+            services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<ISummaryRepository, SummaryRepository>();
             return services;
         }
     }
