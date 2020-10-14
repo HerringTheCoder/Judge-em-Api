@@ -11,7 +11,7 @@ namespace Storage.Tables
         public int ItemId { get; set; }
         public Item Item { get; set; }
         [ForeignKey(nameof(User))]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public User User { get; set; }
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }

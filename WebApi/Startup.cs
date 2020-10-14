@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Storage;
 
 namespace WebApi
 {
@@ -23,6 +24,7 @@ namespace WebApi
             services.AddControllers();
             services.AddCoreLibraryServices();
             services.AddAuthorizationLibraryServices();
+            services.AddStorageLibraryServices(Configuration.GetConnectionString("JudgeDbConnection"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
