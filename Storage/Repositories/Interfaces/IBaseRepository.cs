@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-
 namespace Storage.Repositories.Interfaces
 {
     public interface IBaseRepository<TEntity> where TEntity : class

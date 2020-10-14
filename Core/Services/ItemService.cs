@@ -32,11 +32,12 @@ namespace Core.Services
         {
             var item = _itemRepository.Get(i => i.Id == id).FirstOrDefault();
             _itemRepository.Delete(item);
+            _itemRepository.SaveChanges();
         }
 
         public IEnumerable<Item> GetItemsByGameId(int gameId)
         {
-            var items = _itemRepository.GetAll().Where(i => i.Id == gameId);
+            var items = _itemRepository.GetAll().Where(i => i.Id == gameId).ToList();
             return items;
         }
     }
