@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace WebApi.Hubs
 {
     [Authorize]
-    public class GameHub : Hub<IGameClient>
+    public partial class GameHub : Hub<IGameClient>
     {
         private readonly IGameService _gameService;
         private readonly IItemService _itemService;
@@ -74,50 +74,6 @@ namespace WebApi.Hubs
             else
             {
                 await Clients.Caller.SendMessage("Failed to delete item. Current game not found.");
-            }
-        }
-
-        [Authorize(Policy = "RequireMasterRole")]
-        public async Task StartGame(string gameCode)
-        {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
-            if (gameId != 0)
-            {
-                await _gameService.StartGame(gameId);
-                await Clients.Group(gameCode).RefreshItemIndex(1);
-            }
-            else
-                await Clients.Caller.SendMessage($"Failed to start a game. Game not found.");
-        }
-
-        [Authorize(Policy = "RequireMasterRole")]
-        public async Task FinishGame(string gameCode)
-        {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
-            if (gameId != 0)
-            {
-                await _gameService.FinishGame(gameId);
-                var summary = await _summaryService.Generate(gameId);
-                await Clients.Group(gameCode).ShowSummary(summary);
-            }
-            else
-            {
-                await Clients.Caller.SendMessage("Could not finish a game. Game not found.");
-            }
-        }
-
-        [Authorize(Policy = "RequireMasterRole")]
-        public async Task DisbandGame(string gameCode)
-        {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
-            if (gameId != 0)
-            {
-                await _gameService.DisbandGame(gameId);
-                await Clients.Group(gameCode).DisbandGame("Game has been canceled.");
-            }
-            else
-            {
-                await Clients.Caller.SendMessage("Failed to disband game. Game not found.");
             }
         }
     }
