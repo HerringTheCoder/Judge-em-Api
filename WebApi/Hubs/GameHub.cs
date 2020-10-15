@@ -53,8 +53,8 @@ namespace WebApi.Hubs
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
-                _itemService.Add(request);
-                await Clients.Group(gameCode).RefreshItemList(_itemService.GetItemsByGameId(gameId));
+                await _itemService.Add(request);
+                await Clients.Group(gameCode).RefreshItemList(await _itemService.GetItemsByGameId(gameId));
             }
             else
             {
@@ -67,8 +67,8 @@ namespace WebApi.Hubs
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
-                _itemService.Remove(itemId);
-                var items = _itemService.GetItemsByGameId(gameId);
+                await _itemService.Remove(itemId);
+                var items = await _itemService.GetItemsByGameId(gameId);
                 await Clients.Group(gameCode).RefreshItemList(items);
             }
             else
@@ -83,7 +83,7 @@ namespace WebApi.Hubs
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
-                _gameService.StartGame(gameId);
+                await _gameService.StartGame(gameId);
                 await Clients.Group(gameCode).RefreshItemIndex(1);
             }
             else
@@ -96,8 +96,8 @@ namespace WebApi.Hubs
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
-                _gameService.FinishGame(gameId);
-                var summary = _summaryService.Generate(gameId);
+                await _gameService.FinishGame(gameId);
+                var summary = await _summaryService.Generate(gameId);
                 await Clients.Group(gameCode).ShowSummary(summary);
             }
             else
@@ -112,7 +112,7 @@ namespace WebApi.Hubs
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
-                _gameService.DisbandGame(gameId);
+                await _gameService.DisbandGame(gameId);
                 await Clients.Group(gameCode).DisbandGame("Game has been canceled.");
             }
             else

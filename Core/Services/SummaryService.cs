@@ -1,14 +1,15 @@
 ﻿using System;
-using Storage.Repositories.Interfaces;
+using System.Threading.Tasks;
+using Core.Services.Interfaces;
 using Storage.Tables;
 
 namespace Core.Services
 {
-    public class SummaryService
+    public class SummaryService : ISummaryService
     {
-        public Summary Generate()
+        public Task<Summary> Generate(int gameId)
         {
-        throw new NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

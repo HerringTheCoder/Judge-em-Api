@@ -1,9 +1,10 @@
-﻿using Storage.Tables;
+﻿using System.Threading.Tasks;
+using Storage.Tables;
 
 namespace Core.Services.Interfaces
 {
     public interface ISummaryService
     {
-        public Summary Generate(int gameId);
+        public Task<Summary> Generate(int gameId);
     }
 }

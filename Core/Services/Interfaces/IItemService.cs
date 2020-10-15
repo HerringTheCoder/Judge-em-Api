@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Core.Requests;
 using Storage.Tables;
 
@@ -6,8 +7,8 @@ namespace Core.Services.Interfaces
 {
     public interface IItemService
     {
-        public void Add(ItemCreateRequest request);
-        public void Remove(int id);
-        public IEnumerable<Item> GetItemsByGameId(int gameId);
-    }
+        public Task Add(ItemCreateRequest request);
+        public Task Remove(int id);
+        public Task<IEnumerable<Item>> GetItemsByGameId(int gameId);
+    } 
 }

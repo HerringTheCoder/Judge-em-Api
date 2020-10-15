@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Core.Requests;
 using Core.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Storage.Repositories.Interfaces;
 using Storage.Tables;
 
@@ -16,7 +18,7 @@ namespace Core.Services
         {
             _itemRepository = itemRepository;
         }
-        public void Add(ItemCreateRequest request)
+        public async Task Add(ItemCreateRequest request)
         {
             var item = new Item
             {
@@ -25,19 +27,19 @@ namespace Core.Services
             ImageLink = request.ImageLink
             };
             _itemRepository.Add(item);
-            _itemRepository.SaveChanges();
+            await _itemRepository.SaveChangesAsync();
         }
 
-        public void Remove(int id)
+        public async Task Remove(int id)
         {
             var item = _itemRepository.Get(i => i.Id == id).FirstOrDefault();
             _itemRepository.Delete(item);
-            _itemRepository.SaveChanges();
+            await _itemRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<Item> GetItemsByGameId(int gameId)
+        public async Task<IEnumerable<Item>> GetItemsByGameId(int gameId)
         {
-            var items = _itemRepository.GetAll().Where(i => i.Id == gameId).ToList();
+            var items = await _itemRepository.GetAll().Where(i => i.Id == gameId).ToListAsync();
             return items;
         }
     }

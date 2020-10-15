@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Core.Helpers;
 using Core.Requests;
 using Core.Services.Interfaces;
@@ -18,7 +19,7 @@ namespace Core.Services
             _gameRepository = gameRepository;
         }
 
-        public Game CreateGame(GameCreateRequest request, int userId)
+        public async Task<Game> CreateGame(GameCreateRequest request, int userId)
         {
             var activeCodes = _gameRepository.GetAll()
                 .Where(g => g.Code != null && g.FinishedAt != null)
@@ -36,27 +37,27 @@ namespace Core.Services
                 Code = code
             };
             _gameRepository.Add(game);
-            _gameRepository.SaveChanges();
+            await _gameRepository.SaveChangesAsync();
             return game;
         }
 
-        public void DisbandGame(int id)
+        public async Task DisbandGame(int id)
         {
             var game = _gameRepository.Get(g => g.Id == id).First();
             _gameRepository.Delete(game);
-            _gameRepository.SaveChanges();
+            await _gameRepository.SaveChangesAsync();
         }
 
-        public void StartGame(int id)
+        public async Task StartGame(int id)
         {
             var game = _gameRepository.Get(g => g.Id == id).First();
             if (game != null)
                 game.StartedAt = DateTime.Now;
             _gameRepository.Update(game);
-            _gameRepository.SaveChanges();
+            await _gameRepository.SaveChangesAsync();
         }
 
-        public void FinishGame(int id)
+        public async Task FinishGame(int id)
         {
             var game = _gameRepository.Get(g => g.Id == id).First();
             if (game != null)
@@ -65,7 +66,7 @@ namespace Core.Services
                 game.Code = null;
             }
             _gameRepository.Update(game);
-            _gameRepository.SaveChanges();
+            await _gameRepository.SaveChangesAsync();
         }
 
         public int FindActiveGameIdByCode(string gameCode)

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Storage.Repositories.Interfaces;
 
@@ -43,11 +44,11 @@ namespace Storage.Repositories
             return Context.Set<TEntity>();
         }
 
-        public void SaveChanges()
+        public async Task SaveChangesAsync()
         {
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (Exception ex)
             {

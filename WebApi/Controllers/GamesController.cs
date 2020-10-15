@@ -26,10 +26,10 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public ActionResult<Game> CreateGame([FromBody] GameCreateRequest request)
+        public async Task<ActionResult<Game>> CreateGame([FromBody] GameCreateRequest request)
         {
             int.TryParse(((ClaimsIdentity)User.Identity).Claims.FirstOrDefault()?.Value, out int userId);
-            var game = _gameService.CreateGame(request, userId);
+            var game = await _gameService.CreateGame(request, userId);
             return game;
         }
     }

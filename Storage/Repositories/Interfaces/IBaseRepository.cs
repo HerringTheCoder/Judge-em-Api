@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Storage.Repositories.Interfaces
 {
@@ -11,6 +12,6 @@ namespace Storage.Repositories.Interfaces
         void Add(TEntity entity);
         void Delete(TEntity entity);
         void Update(TEntity entity);
-        void SaveChanges();
+        Task SaveChangesAsync();
     }
 }
