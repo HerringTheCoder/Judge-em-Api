@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Core.Helpers;
 using Core.Requests;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,12 +14,14 @@ namespace WebApi.Hubs
         private readonly IGameService _gameService;
         private readonly IItemService _itemService;
         private readonly ISummaryService _summaryService;
+        private readonly IRatingService _ratingService;
 
-        public GameHub(IGameService gameService, IItemService itemService, ISummaryService summaryService)
+        public GameHub(IGameService gameService, IItemService itemService, ISummaryService summaryService, IRatingService ratingService)
         {
             _gameService = gameService;
             _itemService = itemService;
             _summaryService = summaryService;
+            _ratingService = ratingService;
         }
 
         public async Task ConnectToGame(string gameCode)
@@ -27,11 +31,18 @@ namespace WebApi.Hubs
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, gameId.ToString());
                 await Clients.Group(gameCode).SendMessage($"Player {Context.User.Identity.Name} has joined!");
+                ConnectionObserver.ConnectionStates.Add(Context.ConnectionId, gameCode);
             }
             else
             {
                 await Clients.Caller.SendMessage($"Game not found");
             }
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            ConnectionObserver.ConnectionStates.Remove(Context.ConnectionId);
+            await base.OnDisconnectedAsync(exception);
         }
 
         public async Task DisconnectFromGame(string gameCode)
@@ -75,6 +86,22 @@ namespace WebApi.Hubs
             {
                 await Clients.Caller.SendMessage("Failed to delete item. Current game not found.");
             }
+        }
+
+        public async Task AddRating(string gameCode, RatingCreateRequest request)
+        {
+            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            if (gameId != 0)
+            {
+                await _ratingService.AddRating(request, Context.UserIdentifier);
+                var (ratingsCount, expectedRatingsCount) = await _gameService.GetVotingStatus(gameId, request.ItemId);
+                await Clients.Group(gameCode).RefreshVotingProgress(ratingsCount, expectedRatingsCount);
+            }
+            else
+            {
+                await Clients.Caller.SendMessage("Failed to add rating. Current game not found.");
+            }
+
         }
     }
 }

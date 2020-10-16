@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Core.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
@@ -41,6 +42,7 @@ namespace WebApi.Hubs
             {
                 await _gameService.DisbandGame(gameId);
                 await Clients.Group(gameCode).DisbandGame("Game has been canceled.");
+                ConnectionObserver.CleanConnectionGroup(gameCode);
             }
             else
             {
