@@ -72,10 +72,7 @@ namespace Core.Services
 
         public int FindActiveGameIdByCode(string gameCode)
         {
-            return _gameRepository.GetAll()
-                    .Where(g => g.Code == gameCode && g.FinishedAt == null)
-                    .Select(g => g.Id)
-                .FirstOrDefault();
+            return _gameRepository.GetActiveGameIdByCode(gameCode);
         }
 
         public async Task<(int ratingsCount, int expectedRatingsCount)> GetVotingStatus(int gameId, int itemId)
@@ -85,7 +82,7 @@ namespace Core.Services
             var game = await _gameRepository.GetGameWithSingleItemRatings(gameId, itemId).FirstOrDefaultAsync();
             if (game != null)
             {
-                ratingsCount = game.Items.First().Ratings.Count;
+                var ratings = game.Items.First().Ratings;
                 expectedRatingsCount = ConnectionObserver.ConnectionStates.Count(entry => entry.Value == game.Code);
             }
 
