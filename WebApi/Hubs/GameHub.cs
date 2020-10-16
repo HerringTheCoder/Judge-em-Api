@@ -64,7 +64,7 @@ namespace WebApi.Hubs
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
-                await _itemService.Add(request);
+                await _itemService.Add(request, gameId);
                 await Clients.Group(gameCode).RefreshItemList(await _itemService.GetItemsByGameId(gameId));
             }
             else

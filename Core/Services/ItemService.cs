@@ -17,13 +17,14 @@ namespace Core.Services
         {
             _itemRepository = itemRepository;
         }
-        public async Task Add(ItemCreateRequest request)
+        public async Task Add(ItemCreateRequest request, int gameId)
         {
             var item = new Item
             {
             Name = request.Name,
             Description = request.Description,
-            ImageLink = request.ImageLink
+            ImageLink = request.ImageLink,
+            GameId = gameId
             };
             _itemRepository.Add(item);
             await _itemRepository.SaveChangesAsync();

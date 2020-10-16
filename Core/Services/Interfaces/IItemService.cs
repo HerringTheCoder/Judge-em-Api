@@ -7,7 +7,7 @@ namespace Core.Services.Interfaces
 {
     public interface IItemService
     {
-        Task Add(ItemCreateRequest request);
+        Task Add(ItemCreateRequest request, int gameId);
         Task Remove(int id);
         Task<IEnumerable<Item>> GetItemsByGameId(int gameId);
     }
