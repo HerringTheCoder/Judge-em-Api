@@ -12,6 +12,7 @@ namespace Core
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<ISummaryService, SummaryService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             return services;
         }
     }

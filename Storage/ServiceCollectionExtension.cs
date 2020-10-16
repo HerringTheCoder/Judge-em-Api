@@ -19,6 +19,8 @@ namespace Storage
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<ISummaryRepository, SummaryRepository>();
             services.AddScoped<IRatingRepository, RatingRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryRatingRepository, CategoryRatingRepository>();
             return services;
         }
     }

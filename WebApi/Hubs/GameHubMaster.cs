@@ -62,7 +62,7 @@ namespace WebApi.Hubs
             }
             else
             {
-                await Clients.Caller.SendMessage("Failed to broadcast itemId. Game not found.");
+                await Clients.Caller.SendMessage("Failed to broadcast Item Id. Game not found.");
             }
         }
     }
