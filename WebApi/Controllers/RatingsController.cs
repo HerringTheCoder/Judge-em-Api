@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Core.Requests;
 using Core.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RatingsController : ControllerBase
     {
         private readonly IRatingService _categoryService;
