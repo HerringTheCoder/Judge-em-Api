@@ -41,10 +41,5 @@ namespace Core.Services
         {
             return await _itemRepository.Get(g => g.GameId == gameId).ToListAsync();
         }
-
-        public int GetItemsCountByGameId(int gameId)
-        {
-            return _itemRepository.Get(g => g.GameId == gameId).Count();
-        }
     }
 }

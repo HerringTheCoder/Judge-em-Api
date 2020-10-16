@@ -10,6 +10,5 @@ namespace Core.Services.Interfaces
         Task Add(ItemCreateRequest request);
         Task Remove(int id);
         Task<IEnumerable<Item>> GetItemsByGameId(int gameId);
-        int GetItemsCountByGameId(int gameId);
     }
 }
