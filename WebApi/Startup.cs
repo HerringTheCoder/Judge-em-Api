@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Storage;
+using WebApi.Hubs;
 
 namespace WebApi
 {
@@ -22,6 +23,7 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSignalR();
             services.AddCoreLibraryServices();
             services.AddAuthorizationLibraryServices();
             services.AddStorageLibraryServices(Configuration.GetConnectionString("JudgeDbConnection"));
@@ -44,6 +46,7 @@ namespace WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<GameHub>("/hubs/game");
             });
         }
     }
