@@ -39,8 +39,12 @@ namespace Core.Services
 
         public async Task<IEnumerable<Item>> GetItemsByGameId(int gameId)
         {
-            var items = await _itemRepository.GetAll().Where(i => i.Id == gameId).ToListAsync();
-            return items;
+            return await _itemRepository.Get(g => g.GameId == gameId).ToListAsync();
+        }
+
+        public int GetItemsCountByGameId(int gameId)
+        {
+            return _itemRepository.Get(g => g.GameId == gameId).Count();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics.Eventing.Reader;
+using System.Threading.Tasks;
 using Core.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -14,10 +15,13 @@ namespace WebApi.Hubs
             if (gameId != 0)
             {
                 await _gameService.StartGame(gameId);
-                await Clients.Group(gameCode).RefreshItemIndex(1);
+                var itemId = _itemService.GetItemIdByQueuePosition(gameId, 1);
+                await Clients.Group(gameCode).RefreshCurrentItemId(itemId);
             }
             else
+            {
                 await Clients.Caller.SendMessage($"Failed to start a game. Game not found.");
+            }
         }
 
         public async Task FinishGame(string gameCode)
@@ -47,6 +51,19 @@ namespace WebApi.Hubs
             else
             {
                 await Clients.Caller.SendMessage("Failed to disband game. Game not found.");
+            }
+        }
+
+        public async Task PushItem(string gameCode, int itemId)
+        {
+            int gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            if (gameId != 0)
+            {
+                await Clients.Group(gameCode).RefreshCurrentItemId(itemId);
+            }
+            else
+            {
+                await Clients.Caller.SendMessage("Failed to broadcast itemId. Game not found.");
             }
         }
     }
