@@ -20,10 +20,10 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateAsync([FromBody] CategoryCreateRequest request)
+        public async Task<Category> CreateAsync([FromBody] CategoryCreateRequest request)
         {
             var category = await _categoryService.CreateCategory(request);
-            return CreatedAtAction(nameof(CreateAsync), new {id = category.Id}, category);
+            return category;
         }
     }
 }
