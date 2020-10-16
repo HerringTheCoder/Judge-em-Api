@@ -22,8 +22,8 @@ namespace Core.Services
 
         public async Task<Game> CreateGame(GameCreateRequest request, int userId)
         {
-            var activeCodes = _gameRepository.GetAll()
-                .Where(g => g.Code != null && g.FinishedAt != null)
+            var activeCodes = _gameRepository
+                .Get(g => g.Code != null && g.FinishedAt != null)
                 .Select(g => g.Code)
                 .ToList();
             string code = "";
