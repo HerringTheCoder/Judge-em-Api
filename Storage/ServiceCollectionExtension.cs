@@ -18,6 +18,7 @@ namespace Storage
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<ISummaryRepository, SummaryRepository>();
+            services.AddScoped<IRatingRepository, RatingRepository>();
             return services;
         }
     }
