@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Storage.Tables
@@ -12,5 +13,7 @@ namespace Storage.Tables
         public string ImageLink { get; set; }
         [ForeignKey(nameof(Game))]
         public int GameId { get; set; }
+
+        public virtual ICollection<Rating> Ratings { get; set; }
     }
 }
