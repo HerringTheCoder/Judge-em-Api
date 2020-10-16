@@ -9,13 +9,12 @@ namespace WebApi.Hubs
     [Authorize(Policy = "RequireMasterRole")]
     public partial class GameHub : Hub<IGameClient>
     {
-        public async Task StartGame(string gameCode)
+        public async Task StartGame(string gameCode, int itemId)
         {
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
                 await _gameService.StartGame(gameId);
-                var itemId = _itemService.GetItemIdByQueuePosition(gameId, 1);
                 await Clients.Group(gameCode).RefreshCurrentItemId(itemId);
             }
             else
@@ -54,7 +53,7 @@ namespace WebApi.Hubs
             }
         }
 
-        public async Task PushItem(string gameCode, int itemId)
+        public async Task PushItemId(string gameCode, int itemId)
         {
             int gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)

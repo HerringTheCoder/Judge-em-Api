@@ -101,7 +101,6 @@ namespace WebApi.Hubs
             {
                 await Clients.Caller.SendMessage("Failed to add rating. Current game not found.");
             }
-
         }
     }
 }
