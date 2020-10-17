@@ -7,8 +7,6 @@ namespace Core.Requests
         [Required]
         public int Score { get; set; }
         [Required]
-        public int ItemId { get; set; }
-        [Required]
         public int CategoryId { get; set; }
     }
 }
