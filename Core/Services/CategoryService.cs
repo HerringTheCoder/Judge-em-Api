@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Core.Requests;
 using Core.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Storage.Repositories.Interfaces;
 using Storage.Tables;
 
@@ -34,9 +32,11 @@ namespace Core.Services
             return category;
         }
 
-        public Task DeleteCategory(int id)
+        public async Task DeleteCategory(int id)
         {
-            throw new System.NotImplementedException();
+            var category = _categoryRepository.Get(c => c.Id == id).FirstOrDefault();
+            _categoryRepository.Delete(category);
+            await _categoryRepository.SaveChangesAsync();
         }
     }
 }
