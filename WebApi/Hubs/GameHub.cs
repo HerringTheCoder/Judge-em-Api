@@ -93,7 +93,8 @@ namespace WebApi.Hubs
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
-                await _ratingService.AddRating(request, Context.UserIdentifier);
+                int.TryParse(Context.UserIdentifier, out int userId);
+                await _ratingService.AddRating(request, userId);
                 var (ratingsCount, expectedRatingsCount) = await _gameService.GetVotingStatus(gameId, request.ItemId);
                 await Clients.Group(gameCode).RefreshVotingProgress(ratingsCount, expectedRatingsCount);
             }

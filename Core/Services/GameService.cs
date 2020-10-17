@@ -83,6 +83,7 @@ namespace Core.Services
             if (game != null)
             {
                 var ratings = game.Items.First().Ratings;
+                ratingsCount = ratings.Count();
                 expectedRatingsCount = ConnectionObserver.ConnectionStates.Count(entry => entry.Value == game.Code);
             }
 

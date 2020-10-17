@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task CreateAsync([FromBody] RatingCreateRequest request)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int userId);
             await _categoryService.AddRating(request, userId);
         }
     }
