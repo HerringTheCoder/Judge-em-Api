@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Core.Helpers;
 using Core.Requests;
 using Core.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Storage.Repositories.Interfaces;
 using Storage.Tables;
 
@@ -21,8 +22,8 @@ namespace Core.Services
 
         public async Task<Game> CreateGame(GameCreateRequest request, int userId)
         {
-            var activeCodes = _gameRepository.GetAll()
-                .Where(g => g.Code != null && g.FinishedAt != null)
+            var activeCodes = _gameRepository
+                .Get(g => g.Code != null && g.FinishedAt != null)
                 .Select(g => g.Code)
                 .ToList();
             string code = "";
@@ -71,10 +72,22 @@ namespace Core.Services
 
         public int FindActiveGameIdByCode(string gameCode)
         {
-            return _gameRepository.GetAll()
-                    .Where(g => g.Code == gameCode && g.FinishedAt == null)
-                    .Select(g => g.Id)
-                .FirstOrDefault();
+            return _gameRepository.GetActiveGameIdByCode(gameCode);
+        }
+
+        public async Task<(int ratingsCount, int expectedRatingsCount)> GetVotingStatus(int gameId, int itemId)
+        {
+            int ratingsCount = 0;
+            int expectedRatingsCount = 0;
+            var game = await _gameRepository.GetGameWithSingleItemRatings(gameId, itemId).FirstOrDefaultAsync();
+            if (game != null)
+            {
+                var ratings = game.Items.First().Ratings;
+                ratingsCount = ratings.Count();
+                expectedRatingsCount = ConnectionObserver.ConnectionStates.Count(entry => entry.Value == game.Code);
+            }
+
+            return (ratingsCount, expectedRatingsCount);
         }
     }
 }

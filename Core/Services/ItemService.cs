@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Requests;
@@ -18,13 +17,14 @@ namespace Core.Services
         {
             _itemRepository = itemRepository;
         }
-        public async Task Add(ItemCreateRequest request)
+        public async Task Add(ItemCreateRequest request, int gameId)
         {
             var item = new Item
             {
             Name = request.Name,
             Description = request.Description,
-            ImageLink = request.ImageLink
+            ImageLink = request.ImageLink,
+            GameId = gameId
             };
             _itemRepository.Add(item);
             await _itemRepository.SaveChangesAsync();
@@ -39,8 +39,7 @@ namespace Core.Services
 
         public async Task<IEnumerable<Item>> GetItemsByGameId(int gameId)
         {
-            var items = await _itemRepository.GetAll().Where(i => i.Id == gameId).ToListAsync();
-            return items;
+            return await _itemRepository.Get(g => g.GameId == gameId).ToListAsync();
         }
     }
 }

@@ -8,5 +8,6 @@ namespace Core.Requests
         public string Name { get; set; }
         public string Description { get; set; }
         public string ImageLink { get; set; }
+        public int GameId { get; set; }
     }
 }

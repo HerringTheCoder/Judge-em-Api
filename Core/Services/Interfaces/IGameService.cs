@@ -6,10 +6,11 @@ namespace Core.Services.Interfaces
 {
     public interface IGameService
     {
-        public Task<Game> CreateGame(GameCreateRequest gameRequest, int userId);
-        public Task DisbandGame(int gameId);
-        public Task StartGame(int gameId);
-        public Task FinishGame(int gameId);
-        public int FindActiveGameIdByCode(string gameCode);
+        Task<Game> CreateGame(GameCreateRequest gameRequest, int userId);
+        Task DisbandGame(int gameId);
+        Task StartGame(int gameId);
+        Task FinishGame(int gameId);
+        int FindActiveGameIdByCode(string gameCode);
+        Task<(int ratingsCount, int expectedRatingsCount)> GetVotingStatus(int gameId, int itemId);
     }
 }

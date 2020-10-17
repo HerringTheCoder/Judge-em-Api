@@ -7,8 +7,8 @@ namespace Core.Services.Interfaces
 {
     public interface IItemService
     {
-        public Task Add(ItemCreateRequest request);
-        public Task Remove(int id);
-        public Task<IEnumerable<Item>> GetItemsByGameId(int gameId);
-    } 
+        Task Add(ItemCreateRequest request, int gameId);
+        Task Remove(int id);
+        Task<IEnumerable<Item>> GetItemsByGameId(int gameId);
+    }
 }

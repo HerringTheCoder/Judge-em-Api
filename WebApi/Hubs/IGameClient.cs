@@ -6,7 +6,7 @@ namespace WebApi.Hubs
 {
     public interface IGameClient
     {
-        Task RefreshItemIndex(int itemId);
+        Task RefreshCurrentItemId(int itemId);
         Task RefreshItemList(IEnumerable<Item> items, string message="");
         Task RefreshVotingProgress(int voteCounter, int maxVotes);
         Task SendMessage(string message);
