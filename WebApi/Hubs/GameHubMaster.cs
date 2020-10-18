@@ -1,14 +1,13 @@
-﻿using System.Diagnostics.Eventing.Reader;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Core.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace WebApi.Hubs
 {
-    [Authorize(Policy = "RequireMasterRole")]
     public partial class GameHub : Hub<IGameClient>
     {
+        [Authorize(Policy = "RequireMasterRole")]
         public async Task StartGame(string gameCode, int itemId)
         {
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
@@ -23,6 +22,7 @@ namespace WebApi.Hubs
             }
         }
 
+        [Authorize(Policy = "RequireMasterRole")]
         public async Task FinishGame(string gameCode)
         {
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
@@ -38,6 +38,7 @@ namespace WebApi.Hubs
             }
         }
 
+        [Authorize(Policy = "RequireMasterRole")]
         public async Task DisbandGame(string gameCode)
         {
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
@@ -53,6 +54,7 @@ namespace WebApi.Hubs
             }
         }
 
+        [Authorize(Policy = "RequireMasterRole")]
         public async Task PushItemId(string gameCode, int itemId)
         {
             int gameId = _gameService.FindActiveGameIdByCode(gameCode);
