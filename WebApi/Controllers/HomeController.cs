@@ -7,6 +7,6 @@ namespace WebApi.Controllers
     public class HomeController : ControllerBase
     {
         [HttpGet]
-        public IActionResult Get() => Ok();
+        public string Get() => "Judge'em API pre-production v0.1";
     }
 }
