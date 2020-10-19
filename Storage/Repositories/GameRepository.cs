@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Storage.Repositories.Interfaces;
 using Storage.Tables;
@@ -19,7 +20,7 @@ namespace Storage.Repositories
         public int GetActiveGameIdByCode(string gameCode)
         {
             return GetAll()
-                .Where(g => g.Code == gameCode && g.FinishedAt == null)
+                .Where(g => g.Code == gameCode && g.FinishedAt == DateTime.MinValue)
                 .Select(g => g.Id)
                 .FirstOrDefault();
         }
