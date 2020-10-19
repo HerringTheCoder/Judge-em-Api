@@ -23,7 +23,7 @@ namespace WebApi
         {
             services.AddControllers();
             services.AddCoreLibraryServices();
-            services.AddAuthorizationLibraryServices();
+            services.AddAuthorizationLibraryServices(Configuration);
             services.AddStorageLibraryServices(Configuration.GetConnectionString("JudgeDbConnection"));
         }
 
@@ -38,6 +38,8 @@ namespace WebApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
