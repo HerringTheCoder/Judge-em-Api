@@ -24,11 +24,21 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Game>> CreateGame([FromBody] GameCreateRequest request)
         {
-            int.TryParse(((ClaimsIdentity)User.Identity).Claims.FirstOrDefault()?.Value, out int userId);
+            int.TryParse(((ClaimsIdentity) User.Identity).Claims.FirstOrDefault()?.Value, out int userId);
             var game = await _gameService.CreateGame(request, userId);
             return game;
+        }
+
+        [Route("/{id}")]
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteGame(int id)
+        {
+            await _gameService.DisbandGame(id);
+            return NoContent();
         }
     }
 }
