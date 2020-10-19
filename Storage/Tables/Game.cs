@@ -19,6 +19,7 @@ namespace Storage.Tables
         public User Master { get; set; }
         public DateTime StartedAt { get; set; }
         public DateTime FinishedAt { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Item> Items { get; set; }
     }
 }

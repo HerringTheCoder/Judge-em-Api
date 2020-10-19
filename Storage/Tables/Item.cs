@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Storage.Tables
 {
@@ -13,7 +14,7 @@ namespace Storage.Tables
         public string ImageLink { get; set; }
         [ForeignKey(nameof(Game))]
         public int GameId { get; set; }
-
+        [JsonIgnore]
         public virtual ICollection<Rating> Ratings { get; set; }
     }
 }
