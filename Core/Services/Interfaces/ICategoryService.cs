@@ -9,6 +9,8 @@ namespace Core.Services.Interfaces
     {
         Category GetCategory(int id);
         Task<Category> CreateCategory(CategoryCreateRequest request);
+        Task<List<Category>> CreateCategories(List<CategoryCreateRequest> requests);
+        Task<List<Category>> UpdateCategories(List<CategoryUpdateRequest> requests);
         Task DeleteCategory(int id);
     }
 }

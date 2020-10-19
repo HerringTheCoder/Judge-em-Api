@@ -23,7 +23,7 @@ namespace Core.Services
         public async Task<Game> CreateGame(GameCreateRequest request, int userId)
         {
             var activeCodes = _gameRepository
-                .Get(g => g.Code != null && g.FinishedAt != null)
+                .Get(g => g.Code != null && g.FinishedAt != DateTime.MinValue)
                 .Select(g => g.Code)
                 .ToList();
             string code = "";

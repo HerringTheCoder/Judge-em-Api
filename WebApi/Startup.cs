@@ -23,6 +23,7 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSwaggerGen();
             services.AddSignalR();
             services.AddCoreLibraryServices();
             services.AddAuthorizationLibraryServices();
@@ -37,7 +38,13 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Judge'em API v1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 
