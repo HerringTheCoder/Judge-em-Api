@@ -20,6 +20,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<List<Category>> CreateCategories([FromBody] List<CategoryCreateRequest> requests)
         {
@@ -28,6 +29,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<List<Category>> UpdateCategories([FromBody] List<CategoryUpdateRequest> requests)

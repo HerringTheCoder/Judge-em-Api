@@ -23,6 +23,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Game>> CreateGame([FromBody] GameCreateRequest request)
@@ -32,8 +33,9 @@ namespace WebApi.Controllers
             return game;
         }
 
-        [Route("/{id}")]
         [HttpDelete]
+        [Route("{id}")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteGame(int id)
         {
