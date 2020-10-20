@@ -4,7 +4,6 @@ using Core.Requests;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Storage.Tables;
 
 namespace WebApi.Controllers
@@ -14,6 +13,7 @@ namespace WebApi.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+
         public CategoriesController(ICategoryService categoryService)
         {
             _categoryService = categoryService;
@@ -36,6 +36,16 @@ namespace WebApi.Controllers
         {
             var categories = await _categoryService.UpdateCategories(requests);
             return categories;
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            await _categoryService.DeleteCategory(id);
+            return Ok();
         }
     }
 }
