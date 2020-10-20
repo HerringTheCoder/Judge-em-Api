@@ -78,7 +78,7 @@ namespace WebApi.Hubs
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
-                await _itemService.Remove(itemId);
+                await _itemService.DeleteAsync(itemId);
                 var items = await _itemService.GetItemsByGameId(gameId);
                 await Clients.Group(gameCode).RefreshItemList(items);
             }

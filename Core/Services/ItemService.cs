@@ -30,7 +30,7 @@ namespace Core.Services
             await _itemRepository.SaveChangesAsync();
         }
 
-        public async Task Remove(int id)
+        public async Task DeleteAsync(int id)
         {
             var item = _itemRepository.Get(i => i.Id == id).FirstOrDefault();
             _itemRepository.Delete(item);

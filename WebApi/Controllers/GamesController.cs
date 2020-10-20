@@ -12,7 +12,6 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class GamesController : ControllerBase
     {
         private readonly IGameService _gameService;
@@ -35,12 +34,11 @@ namespace WebApi.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteGame(int id)
         {
             await _gameService.DisbandGame(id);
-            return NoContent();
+            return Ok();
         }
     }
 }
