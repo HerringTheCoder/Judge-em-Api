@@ -41,7 +41,8 @@ namespace Core.Services
                 var category = new Category
                 {
                     Name = categoryRequest.Name,
-                    Weight = categoryRequest.Weight
+                    Weight = categoryRequest.Weight,
+                    GameId = categoryRequest.GameId
                 };
                 _categoryRepository.Add(category);
                 categories.Add(category);
@@ -57,8 +58,13 @@ namespace Core.Services
             foreach (var category in categories)
             {
                 var categoryRequest = categoryRequests.Find(cr => cr.Id == category.Id);
-                category.Name = categoryRequest.Name;
-                category.Weight = categoryRequest.Weight;
+                if (categoryRequest != null)
+                {
+                    category.Name = categoryRequest.Name;
+                    category.Weight = categoryRequest.Weight;
+                    category.GameId = categoryRequest.GameId;
+                }
+
                 _categoryRepository.Update(category);
             }
 
