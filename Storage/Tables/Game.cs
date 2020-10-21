@@ -21,5 +21,7 @@ namespace Storage.Tables
         public DateTime FinishedAt { get; set; }
         [JsonIgnore]
         public virtual ICollection<Item> Items { get; set; }
+        [JsonIgnore]
+        public ICollection<Category> Categories { get; set; }
     }
 }

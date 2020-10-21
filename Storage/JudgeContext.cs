@@ -16,7 +16,8 @@ namespace Storage
             modelBuilder.Entity<CategoryRating>()
                 .HasOne(cr => cr.Category)
                 .WithMany(c => c.CategoryRatings)
-                .HasForeignKey(cr => cr.CategoryId);
+                .HasForeignKey(cr => cr.CategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<CategoryRating>()
                 .HasOne(cr => cr.Rating)
                 .WithMany(r => r.CategoryRatings)
