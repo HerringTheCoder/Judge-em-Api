@@ -9,38 +9,6 @@
     <Compile Remove="Migrations\20201014103105_InitDatabase.Designer.cs" />
     <Compile Remove="Migrations\20201014104141_InitDatabase.cs" />
     <Compile Remove="Migrations\20201014104141_InitDatabase.Designer.cs" />
-    <Compile Remove="Migrations\20201021153251_AddGameCategoriesRelation.cs" />
-    <Compile Remove="Migrations\20201021153251_AddGameCategoriesRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021154031_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021154031_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021155317_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021155317_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021155440_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021155440_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021155940_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021155940_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021160037_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021160037_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021160544_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021160544_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021160916_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021160916_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021161656_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021161656_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021162339_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021162339_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021164421_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021164421_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021164547_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021164547_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021164846_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021164846_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021165238_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021165238_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021165413_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021165413_AddCategoriesGameRelation.Designer.cs" />
-    <Compile Remove="Migrations\20201021165730_AddCategoriesGameRelation.cs" />
-    <Compile Remove="Migrations\20201021165730_AddCategoriesGameRelation.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
