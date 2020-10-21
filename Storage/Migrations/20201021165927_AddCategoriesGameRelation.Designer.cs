@@ -10,7 +10,7 @@ using Storage;
 namespace Storage.Migrations
 {
     [DbContext(typeof(JudgeContext))]
-    [Migration("20201021160916_AddCategoriesGameRelation")]
+    [Migration("20201021165927_AddCategoriesGameRelation")]
     partial class AddCategoriesGameRelation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,7 @@ namespace Storage.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RatingId")
+                    b.Property<int>("RatingId")
                         .HasColumnType("int");
 
                     b.Property<int>("Score")

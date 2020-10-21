@@ -7,7 +7,7 @@ namespace Storage.Tables
         public int? CategoryId { get; set; }
         [JsonIgnore]
         public Category Category { get; set; }
-        public int? RatingId { get; set; }
+        public int RatingId { get; set; }
         [JsonIgnore]
         public Rating Rating { get; set; }
         public int Score { get; set; }

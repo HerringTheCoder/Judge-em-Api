@@ -47,7 +47,7 @@ namespace Storage.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RatingId")
+                    b.Property<int>("RatingId")
                         .HasColumnType("int");
 
                     b.Property<int>("Score")
