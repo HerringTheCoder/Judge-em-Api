@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Authorization.Services;
+using Authorization.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,9 +54,13 @@ namespace Authorization
                 {
                     Options.AppId = Configuration["Authentication:Facebook:AppId"];
                     Options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                    Options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 });
 
-                return services;
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IJwtService, JwtService>();
+
+            return services;
         }
     }
 }

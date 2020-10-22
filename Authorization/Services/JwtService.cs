@@ -5,19 +5,26 @@ using Storage.Tables;
 using System;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Storage;
+using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
 namespace Authorization.Services
 {
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
+        private readonly JudgeContext _judgeContext;
 
-        public JwtSecurityToken GenerateJwtToken(User user)
+        public JwtService(IConfiguration configuration, JudgeContext judgeContext)
         {
+            _configuration = configuration;
+            _judgeContext = judgeContext;
+        }
+        public JwtSecurityToken GenerateJwtToken(string email)
+        {
+            if (_judgeContext.Users.FirstOrDefault(u => u.Email == email) == null) return null;
 
-            if (user == null) return null;
-            
-           
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtToken:SecretKey"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
