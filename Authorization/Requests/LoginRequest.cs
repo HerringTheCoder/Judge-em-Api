@@ -5,6 +5,6 @@ namespace Authorization.Requests
     public class LoginRequest
     {
         [Required]
-        public string Email { get; set; }
+        public string Nickname { get; set; }
     }
 }
