@@ -11,6 +11,7 @@ using Storage.Tables;
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class GamesController : ControllerBase
     {

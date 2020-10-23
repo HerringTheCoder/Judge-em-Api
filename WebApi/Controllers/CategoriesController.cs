@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Core.Requests;
 using Core.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Storage.Tables;
@@ -9,6 +10,7 @@ using Storage.Tables;
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class CategoriesController : ControllerBase
     {

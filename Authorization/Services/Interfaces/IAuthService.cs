@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Authorization.Services.Interfaces
 {
-    public interface IAuthenticationService
+    public interface IAuthService
     {
         Task<string> Register(RegisterRequest request);
         Task<string> GetToken(AuthenticateResult result);

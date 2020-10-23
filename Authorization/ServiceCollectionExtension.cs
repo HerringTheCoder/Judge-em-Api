@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Authorization
 {
@@ -70,7 +71,7 @@ namespace Authorization
                     Options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 });
 
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtService, JwtService>();
 
             return services;
