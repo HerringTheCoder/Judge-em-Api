@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Storage.Tables
 {
@@ -10,7 +11,9 @@ namespace Storage.Tables
         public string Nickname { get; set; }
         public string ProviderId { get; set; }
         public string ProviderName { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Game> Games { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Rating> Ratings { get; set; }
     }
 }

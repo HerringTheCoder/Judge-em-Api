@@ -26,6 +26,9 @@ namespace Storage.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -34,7 +37,27 @@ namespace Storage.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GameId");
+
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Storage.Tables.CategoryRating", b =>
+                {
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RatingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryId", "RatingId");
+
+                    b.HasIndex("RatingId");
+
+                    b.ToTable("CategoryRatings");
                 });
 
             modelBuilder.Entity("Storage.Tables.Game", b =>
@@ -99,21 +122,16 @@ namespace Storage.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
+                    b.Property<float>("TotalScore")
+                        .HasColumnType("real");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ItemId");
 
@@ -167,6 +185,30 @@ namespace Storage.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Storage.Tables.Category", b =>
+                {
+                    b.HasOne("Storage.Tables.Game", "Game")
+                        .WithMany("Categories")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Storage.Tables.CategoryRating", b =>
+                {
+                    b.HasOne("Storage.Tables.Category", "Category")
+                        .WithMany("CategoryRatings")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Storage.Tables.Rating", "Rating")
+                        .WithMany("CategoryRatings")
+                        .HasForeignKey("RatingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Storage.Tables.Game", b =>
                 {
                     b.HasOne("Storage.Tables.User", "Master")
@@ -187,14 +229,8 @@ namespace Storage.Migrations
 
             modelBuilder.Entity("Storage.Tables.Rating", b =>
                 {
-                    b.HasOne("Storage.Tables.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Storage.Tables.Item", "Item")
-                        .WithMany()
+                        .WithMany("Ratings")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Storage;
+using WebApi.Hubs;
 
 namespace WebApi
 {
@@ -22,6 +23,8 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSwaggerGen();
+            services.AddSignalR();
             services.AddCoreLibraryServices();
             services.AddAuthorizationLibraryServices(Configuration);
             services.AddStorageLibraryServices(Configuration.GetConnectionString("JudgeDbConnection"));
@@ -35,7 +38,13 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Judge'em API v1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 
@@ -46,6 +55,7 @@ namespace WebApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<GameHub>("/hubs/game");
             });
         }
     }
