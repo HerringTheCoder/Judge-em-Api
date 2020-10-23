@@ -30,7 +30,7 @@ namespace Authorization.Services
             throw new NotImplementedException();
         }
 
-        public async Task<JwtSecurityToken> Register(RegisterRequest request)
+        public async Task<string> Register(RegisterRequest request)
         {
             
             var newUser = new User()
@@ -41,20 +41,20 @@ namespace Authorization.Services
             await _judgeContext.Users.AddAsync(newUser);
             await _judgeContext.SaveChangesAsync();
 
-            var token = _jwtService.GenerateJwtToken(newUser.Email);
+            var token = _jwtService.GenerateJwtToken(newUser);
             return token;
         }
         
-        public async Task<JwtSecurityToken> AuthenticationResponse(AuthenticateResult result)
+        public async Task<string> AuthenticationResponse(AuthenticateResult result)
         {
-
             var email = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-            var name = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
-            var providerId = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            var providerName = result.Principal.Claims.FirstOrDefault().Issuer;
 
-            if (_judgeContext.Users.Any(i => i.Email != email ))
+            if (!_judgeContext.Users.Any(i => i.Email == email ))
             {
+                var name = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
+                var providerId = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+                var providerName = result.Principal.Claims.FirstOrDefault().Issuer;
+
                 var newUser = new User()
                 {
                     Email = email,
@@ -65,7 +65,8 @@ namespace Authorization.Services
                 await _judgeContext.Users.AddAsync(newUser);
                 await _judgeContext.SaveChangesAsync();
             }
-            var token =_jwtService.GenerateJwtToken(email);
+            var authUser = _judgeContext.Users.FirstOrDefault(i => i.Email == email);
+            var token =_jwtService.GenerateJwtToken(authUser);
 
             return token;
         }

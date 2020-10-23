@@ -8,8 +8,8 @@ namespace Authorization.Services.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<JwtSecurityToken> Register(RegisterRequest request);
+        Task<string> Register(RegisterRequest request);
         Task Logout();
-        Task<JwtSecurityToken> AuthenticationResponse(AuthenticateResult result);
+        Task<string> AuthenticationResponse(AuthenticateResult result);
     }
 }

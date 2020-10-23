@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Storage;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
+using System.Security.Claims;
 
 namespace Authorization.Services
 {
@@ -21,19 +22,28 @@ namespace Authorization.Services
             _configuration = configuration;
             _judgeContext = judgeContext;
         }
-        public JwtSecurityToken GenerateJwtToken(string email)
+        public string GenerateJwtToken(User user)
         {
-            if (_judgeContext.Users.FirstOrDefault(u => u.Email == email) == null) return null;
+            var tokenHandler = new JwtSecurityTokenHandler();
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtToken:SecretKey"]));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Name.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email.ToString()),
+                    new Claim(ClaimTypes.AuthenticationMethod, user.ProviderName.ToString()),
+                }),
+                Expires = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["JwtToken:TokenExpiry"])),
+                SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
+                Audience = _configuration["JwtToken:Audience"],
+                Issuer = _configuration["JwtToken:Issuer"]
+            };
 
-            var token = new JwtSecurityToken(_configuration["JwtToken:Issuer"],
-              _configuration["JwtToken:Issuer"],
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return token;
+            return tokenHandler.WriteToken(token);
         }
     }
 }
