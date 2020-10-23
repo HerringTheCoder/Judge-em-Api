@@ -1,14 +1,12 @@
 ﻿using Authorization.Services.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+using Storage;
 using Storage.Tables;
 using System;
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using Storage;
-using Microsoft.AspNetCore.Identity;
-using System.Linq;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
 namespace Authorization.Services
 {
@@ -31,6 +29,7 @@ namespace Authorization.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Name.ToString()),
                     new Claim(ClaimTypes.Email, user.Email.ToString()),
                     new Claim(ClaimTypes.AuthenticationMethod, user.ProviderName.ToString()),

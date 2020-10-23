@@ -1,13 +1,10 @@
 ﻿using Authorization.Requests;
 using Authorization.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Internal;
 using Storage;
 using Storage.Tables;
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -66,7 +63,7 @@ namespace Authorization.Services
                 await _judgeContext.SaveChangesAsync();
             }
             var authUser = _judgeContext.Users.FirstOrDefault(i => i.Email == email);
-            var token =_jwtService.GenerateJwtToken(authUser);
+            var token = _jwtService.GenerateJwtToken(authUser);
 
             return token;
         }

@@ -67,7 +67,7 @@ namespace WebApi.Controllers
         public async Task<IActionResult> AuthenticationResponse()
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            var token = _authenticationService.AuthenticationResponse(result);
+            var token = await _authenticationService.AuthenticationResponse(result);
 
             return Ok(token);
         }
