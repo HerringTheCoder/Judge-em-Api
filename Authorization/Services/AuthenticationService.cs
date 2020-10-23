@@ -22,14 +22,8 @@ namespace Authorization.Services
             _judgeContext = context;
         }
 
-        public Task Logout()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<string> Register(RegisterRequest request)
         {
-            
             var newUser = new User()
             {
                 Email = request.Email,
@@ -41,12 +35,12 @@ namespace Authorization.Services
             var token = _jwtService.GenerateJwtToken(newUser);
             return token;
         }
-        
-        public async Task<string> AuthenticationResponse(AuthenticateResult result)
+
+        public async Task<string> GetToken(AuthenticateResult result)
         {
             var email = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
 
-            if (!_judgeContext.Users.Any(i => i.Email == email ))
+            if (!_judgeContext.Users.Any(i => i.Email == email))
             {
                 var name = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
                 var providerId = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;

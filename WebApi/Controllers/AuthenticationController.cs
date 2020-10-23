@@ -22,7 +22,7 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Route("Register")]
+        [Route("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Register(RegisterRequest request)
@@ -33,41 +33,33 @@ namespace WebApi.Controllers
             return Ok(token);
         }
 
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Logout()
-        {
-            await _authenticationService.Logout();
-            return RedirectToPage("/");
-        }
-
-        [Route("google-login")]
+        [Route("login/google")]
         public IActionResult GoogleLogin()
         {
 
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("AuthenticationResponse")
+                RedirectUri = Url.Action("GetToken")
             };
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
-        [Route("facebook-login")]
+        [Route("login/facebook")]
         public IActionResult FacebookLogin()
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("AuthenticationResponse")
+                RedirectUri = Url.Action("GetToken")
             };
 
             return Challenge(properties, FacebookDefaults.AuthenticationScheme);
         }
 
-        [Route("authentication-response")]
-        public async Task<IActionResult> AuthenticationResponse()
+        [Route("get-token")]
+        public async Task<IActionResult> GetToken()
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            var token = await _authenticationService.AuthenticationResponse(result);
+            var token = await _authenticationService.GetToken(result);
 
             return Ok(token);
         }

@@ -7,7 +7,6 @@ namespace Authorization.Services.Interfaces
     public interface IAuthenticationService
     {
         Task<string> Register(RegisterRequest request);
-        Task Logout();
-        Task<string> AuthenticationResponse(AuthenticateResult result);
+        Task<string> GetToken(AuthenticateResult result);
     }
 }
