@@ -38,24 +38,24 @@ namespace Authorization.Services
         public async Task<string> GetToken(AuthenticateResult result)
         {
             var email = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-            if (!_userRepository.Get(u => u.Email == email).Any())
+            var user = _userRepository.Get(u => u.Email == email).FirstOrDefault();
+            if (user == null)
             {
                 var name = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
                 var providerId = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
                 var providerName = result.Principal.Claims.FirstOrDefault().Issuer;
 
-                var newUser = new User()
+                user = new User()
                 {
                     Email = email,
                     Name = name,
                     ProviderId = providerId,
                     ProviderName = providerName
                 };
-                _userRepository.Add(newUser);
+                _userRepository.Add(user);
                 await _userRepository.SaveChangesAsync();
             }
-            var authUser = _userRepository.Get(u => u.Email == email).FirstOrDefault();
-            var token = _jwtService.GenerateJwtToken(authUser);
+            var token = _jwtService.GenerateJwtToken(user);
 
             return token;
         }
