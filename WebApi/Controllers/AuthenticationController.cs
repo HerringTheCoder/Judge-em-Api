@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Authorization.Requests;
+using Authorization.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Facebook;
@@ -14,11 +15,11 @@ namespace WebApi.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly Authorization.Services.Interfaces.IAuthenticationService _authenticationService;
+        private readonly IAuthService _authService;
 
-        public AuthenticationController(Authorization.Services.Interfaces.IAuthenticationService authenticationService)
+        public AuthenticationController(Authorization.Services.Interfaces.IAuthService authService)
         {
-            _authenticationService = authenticationService;
+            _authService = authService;
         }
 
         [HttpPost]
@@ -27,39 +28,49 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            var token = await _authenticationService.Register(request);
-            if (token == null) return NotFound();
+            var token = await _authService.Register(request);
+            if (token == null) 
+                return NotFound();
 
             return Ok(token);
         }
-
+        
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status307TemporaryRedirect)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("login/google")]
         public IActionResult GoogleLogin()
         {
 
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("GetToken")
+                RedirectUri = Url.Action("SocialLogin")
             };
+
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status307TemporaryRedirect)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("login/facebook")]
         public IActionResult FacebookLogin()
         {
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("GetToken")
+                RedirectUri = Url.Action("SocialLogin")
             };
 
             return Challenge(properties, FacebookDefaults.AuthenticationScheme);
         }
 
-        [Route("get-token")]
-        public async Task<IActionResult> GetToken()
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [Route("login/social")]
+        public async Task<IActionResult> SocialLogin()
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            var token = await _authenticationService.GetToken(result);
+            var token = await _authService.GetToken(result);
 
             return Ok(token);
         }

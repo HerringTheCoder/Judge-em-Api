@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Authorization.Services
 {
-    class AuthenticationService : Interfaces.IAuthenticationService
+    class AuthService : IAuthService
     {
         private readonly IJwtService _jwtService;
         private readonly IUserRepository _userRepository;
 
-        public AuthenticationService(IJwtService jwtService, IUserRepository userRepository)
+        public AuthService(IJwtService jwtService, IUserRepository userRepository)
         {
             _jwtService = jwtService;
             _userRepository = userRepository;
