@@ -25,17 +25,12 @@ namespace Authorization.Services
             _judgeContext = context;
         }
 
-        public Task Login(LoginRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task Logout()
         {
             throw new NotImplementedException();
         }
 
-        public async Task<User> Register(RegisterRequest request)
+        public async Task<JwtSecurityToken> Register(RegisterRequest request)
         {
             
             var newUser = new User()
@@ -43,9 +38,11 @@ namespace Authorization.Services
                 Email = request.Email,
                 Nickname = request.Nickname,
             };
-            _judgeContext.Users.Add(newUser);
+            await _judgeContext.Users.AddAsync(newUser);
             await _judgeContext.SaveChangesAsync();
-            return newUser;
+
+            var token = _jwtService.GenerateJwtToken(newUser.Email);
+            return token;
         }
         
         public async Task<JwtSecurityToken> AuthenticationResponse(AuthenticateResult result)
@@ -71,16 +68,6 @@ namespace Authorization.Services
             var token =_jwtService.GenerateJwtToken(email);
 
             return token;
-        }
-
-        public Task FacebookLogin()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task GoogleLogin()
-        {
-            throw new NotImplementedException();
         }
     }
 }

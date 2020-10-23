@@ -1,10 +1,5 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Authorization.Requests;
-using Authorization.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Facebook;
@@ -12,8 +7,6 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using Storage.Tables;
 
 namespace WebApi.Controllers
 {
@@ -34,16 +27,10 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            var newUser = _authenticationService.Register(request);
+            var token = await _authenticationService.Register(request);
+            if (token == null) return NotFound();
 
-            return Ok();
-        }
-
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Login(LoginRequest request)
-        {
-            throw new NotImplementedException();
+            return Ok(token);
         }
 
         [HttpPost]

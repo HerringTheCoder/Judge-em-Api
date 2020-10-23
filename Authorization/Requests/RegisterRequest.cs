@@ -2,8 +2,11 @@
 
 namespace Authorization.Requests
 {
-    public class RegisterRequest : LoginRequest
+    public class RegisterRequest
     {
+        [Required]
+        public string Nickname { get; set; }
+        [Required]
         public string Email { get; set; }
     }
 }
