@@ -1,10 +1,9 @@
 ﻿using Authorization.Requests;
 using Authorization.Services.Interfaces;
+using Storage.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore.Internal;
-using Storage;
 using Storage.Tables;
-using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,12 +13,12 @@ namespace Authorization.Services
     class AuthenticationService : Interfaces.IAuthenticationService
     {
         private readonly IJwtService _jwtService;
-        private readonly JudgeContext _judgeContext;
+        private readonly IUserRepository _userRepository;
 
-        public AuthenticationService(IJwtService jwtService, JudgeContext context)
+        public AuthenticationService(IJwtService jwtService, IUserRepository userRepository)
         {
             _jwtService = jwtService;
-            _judgeContext = context;
+            _userRepository = userRepository;
         }
 
         public async Task<string> Register(RegisterRequest request)
@@ -29,8 +28,8 @@ namespace Authorization.Services
                 Email = request.Email,
                 Nickname = request.Nickname,
             };
-            await _judgeContext.Users.AddAsync(newUser);
-            await _judgeContext.SaveChangesAsync();
+            _userRepository.Add(newUser);
+            await _userRepository.SaveChangesAsync();
 
             var token = _jwtService.GenerateJwtToken(newUser);
             return token;
@@ -39,8 +38,7 @@ namespace Authorization.Services
         public async Task<string> GetToken(AuthenticateResult result)
         {
             var email = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-
-            if (!_judgeContext.Users.Any(i => i.Email == email))
+            if (!_userRepository.Get(u => u.Email == email).Any())
             {
                 var name = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
                 var providerId = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
@@ -53,10 +51,10 @@ namespace Authorization.Services
                     ProviderId = providerId,
                     ProviderName = providerName
                 };
-                await _judgeContext.Users.AddAsync(newUser);
-                await _judgeContext.SaveChangesAsync();
+                _userRepository.Add(newUser);
+                await _userRepository.SaveChangesAsync();
             }
-            var authUser = _judgeContext.Users.FirstOrDefault(i => i.Email == email);
+            var authUser = _userRepository.Get(u => u.Email == email).FirstOrDefault();
             var token = _jwtService.GenerateJwtToken(authUser);
 
             return token;

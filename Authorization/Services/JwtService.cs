@@ -1,7 +1,6 @@
 ﻿using Authorization.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Storage;
 using Storage.Tables;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,12 +12,10 @@ namespace Authorization.Services
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
-        private readonly JudgeContext _judgeContext;
 
-        public JwtService(IConfiguration configuration, JudgeContext judgeContext)
+        public JwtService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _judgeContext = judgeContext;
         }
         public string GenerateJwtToken(User user)
         {
