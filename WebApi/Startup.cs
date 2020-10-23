@@ -26,7 +26,7 @@ namespace WebApi
             services.AddSwaggerGen();
             services.AddSignalR();
             services.AddCoreLibraryServices();
-            services.AddAuthorizationLibraryServices();
+            services.AddAuthorizationLibraryServices(Configuration);
             services.AddStorageLibraryServices(Configuration.GetConnectionString("JudgeDbConnection"));
         }
 
@@ -47,6 +47,8 @@ namespace WebApi
             });
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

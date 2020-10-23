@@ -44,7 +44,7 @@ namespace Storage.Migrations
                     Email = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     Nickname = table.Column<string>(nullable: true),
-                    ProviderId = table.Column<int>(nullable: true),
+                    ProviderId = table.Column<string>(nullable: true),
                     ProviderName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
