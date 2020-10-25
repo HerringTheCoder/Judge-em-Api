@@ -7,7 +7,7 @@ namespace Core.Services.Interfaces
 {
     public interface ICategoryService
     {
-        Category GetCategory(int id);
+        Task<List<Category>> GetCategoriesByGameId(int id);
         Task<Category> CreateCategory(CategoryCreateRequest request);
         Task<List<Category>> CreateCategories(List<CategoryCreateRequest> requests);
         Task<List<Category>> UpdateCategories(List<CategoryUpdateRequest> requests);

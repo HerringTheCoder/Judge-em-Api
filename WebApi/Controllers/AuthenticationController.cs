@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace WebApi.Controllers
 {
@@ -16,10 +17,12 @@ namespace WebApi.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IConfiguration _configuration;
 
-        public AuthenticationController(Authorization.Services.Interfaces.IAuthService authService)
+        public AuthenticationController(IAuthService authService, IConfiguration configuration)
         {
             _authService = authService;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -36,7 +39,7 @@ namespace WebApi.Controllers
         }
         
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status307TemporaryRedirect)]
+        [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("login/google")]
         public IActionResult GoogleLogin()
@@ -51,7 +54,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status307TemporaryRedirect)]
+        [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("login/facebook")]
         public IActionResult FacebookLogin()
@@ -65,14 +68,14 @@ namespace WebApi.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status302Found)]
         [Route("login/social")]
         public async Task<IActionResult> SocialLogin()
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             var token = await _authService.GetToken(result);
 
-            return Ok(token);
+            return Redirect(_configuration.GetSection("JwtToken")["DestinationUrl"] + token);
         }
     }
 }

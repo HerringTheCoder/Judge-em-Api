@@ -27,10 +27,11 @@ namespace Core.Services
                 .Select(g => g.Code)
                 .ToList();
             string code = "";
-            while (activeCodes.Contains(code))
+            do
             {
                 code = CodeGenerator.Generate(CodeLength);
-            }
+            } while (activeCodes.Contains(code));
+
             var game = new Game
             {
                 MasterId = userId,
