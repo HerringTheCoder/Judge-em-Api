@@ -10,9 +10,9 @@ namespace Storage.Tables
         [ForeignKey(nameof(Item))]
         public int ItemId { get; set; }
         public Item Item { get; set; }
-        [ForeignKey(nameof(User))]
-        public int? UserId { get; set; }
-        public User User { get; set; }
+        [ForeignKey(nameof(PlayerProfile))]
+        public int PlayerProfileId { get; set; }
+        public PlayerProfile PlayerProfile { get; set; }
         public ICollection<CategoryRating> CategoryRatings { get; set; }
     }
 }

@@ -17,10 +17,12 @@ namespace Core.Services
         }
         public async Task<List<Category>> GetCategoriesByGameId(int gameId)
         {
-            var categories = _categoryRepository
+            var categories = new List<Category>();
+            await Task.Run(() => categories = _categoryRepository
                 .GetAll()
                 .Where(c => c.GameId == gameId)
-                .ToList();
+                .ToList()
+                );
             return categories;
         }
 

@@ -25,8 +25,7 @@ namespace Authorization.Services
         {
             var newUser = new User()
             {
-                Email = request.Email,
-                Nickname = request.Nickname,
+                Email = request.Email
             };
             _userRepository.Add(newUser);
             await _userRepository.SaveChangesAsync();

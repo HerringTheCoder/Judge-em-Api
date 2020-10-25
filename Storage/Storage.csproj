@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20201014103105_InitDatabase.Designer.cs" />
     <Compile Remove="Migrations\20201014104141_InitDatabase.cs" />
     <Compile Remove="Migrations\20201014104141_InitDatabase.Designer.cs" />
+    <Compile Remove="Migrations\20201025112538_AddPlayerProfilesTable.cs" />
+    <Compile Remove="Migrations\20201025112538_AddPlayerProfilesTable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
