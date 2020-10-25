@@ -15,10 +15,13 @@ namespace Core.Services
         {
             _categoryRepository = categoryRepository;
         }
-        public Category GetCategory(int id)
+        public async Task<List<Category>> GetCategoriesByGameId(int gameId)
         {
-            var category = _categoryRepository.Get(c => c.Id == id).FirstOrDefault();
-            return category;
+            var categories = _categoryRepository
+                .GetAll()
+                .Where(c => c.GameId == gameId)
+                .ToList();
+            return categories;
         }
 
         public async Task<Category> CreateCategory(CategoryCreateRequest request)

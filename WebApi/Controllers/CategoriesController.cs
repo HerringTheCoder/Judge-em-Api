@@ -21,6 +21,15 @@ namespace WebApi.Controllers
             _categoryService = categoryService;
         }
 
+        [HttpGet]
+        [Route("{gameId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<Category>> GetCategoriesByGameId(int gameId)
+        {
+           return await _categoryService.GetCategoriesByGameId(gameId);
+        }
+
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
