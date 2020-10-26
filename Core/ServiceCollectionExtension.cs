@@ -13,6 +13,7 @@ namespace Core
             services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<ISummaryService, SummaryService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IPlayerProfileService, PlayerProfileService>();
             return services;
         }
     }

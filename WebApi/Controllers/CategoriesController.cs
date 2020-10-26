@@ -27,7 +27,7 @@ namespace WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<List<Category>> GetCategoriesByGameId(int gameId)
         {
-           return await _categoryService.GetCategoriesByGameId(gameId);
+            return await _categoryService.GetCategoriesByGameId(gameId);
         }
 
         [HttpPost]

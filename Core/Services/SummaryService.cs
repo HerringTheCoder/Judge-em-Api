@@ -24,7 +24,7 @@ namespace Core.Services
             var game = _gameRepository.Get(g => g.Id == gameId)
                 .Include(g => g.Items)
                 .ThenInclude(i => i.Ratings)
-                .ThenInclude(r => r.User)
+                .ThenInclude(r => r.PlayerProfile)
                 .FirstOrDefault();
             var gameDto = new GameDto(game);
             string jsonResult = JsonSerializer.Serialize(gameDto);
