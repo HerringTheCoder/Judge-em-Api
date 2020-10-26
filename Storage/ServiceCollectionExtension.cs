@@ -21,6 +21,8 @@ namespace Storage
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryRatingRepository, CategoryRatingRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPlayerProfileRepository, PlayerProfileRepository>();
             return services;
         }
     }

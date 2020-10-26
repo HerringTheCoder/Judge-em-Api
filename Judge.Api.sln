@@ -14,9 +14,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F527EEDD-AF74-4B49-9676-6B46C8E33B2A}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{D2BADCED-2AE4-4F53-8F5A-C45EFCE79534}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{D2BADCED-2AE4-4F53-8F5A-C45EFCE79534}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

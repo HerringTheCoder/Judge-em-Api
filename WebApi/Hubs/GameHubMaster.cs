@@ -1,12 +1,11 @@
-﻿using System.Diagnostics.Eventing.Reader;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Core.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace WebApi.Hubs
 {
-    [Authorize(Policy = "RequireMasterRole")]
+    [Authorize]
     public partial class GameHub : Hub<IGameClient>
     {
         public async Task StartGame(string gameCode, int itemId)
@@ -29,7 +28,7 @@ namespace WebApi.Hubs
             if (gameId != 0)
             {
                 await _gameService.FinishGame(gameId);
-                var summary = await _summaryService.Generate(gameId);
+                var summary = await _summaryService.GenerateAsync(gameId);
                 await Clients.Group(gameCode).ShowSummary(summary);
             }
             else

@@ -26,6 +26,9 @@ namespace Storage.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -34,15 +37,17 @@ namespace Storage.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GameId");
+
                     b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Storage.Tables.CategoryRating", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RatingId")
+                    b.Property<int?>("RatingId")
                         .HasColumnType("int");
 
                     b.Property<int>("Score")
@@ -110,6 +115,30 @@ namespace Storage.Migrations
                     b.ToTable("Items");
                 });
 
+            modelBuilder.Entity("Storage.Tables.PlayerProfile", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nickname")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PlayerProfiles");
+                });
+
             modelBuilder.Entity("Storage.Tables.Rating", b =>
                 {
                     b.Property<int>("Id")
@@ -120,17 +149,17 @@ namespace Storage.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
+                    b.Property<string>("PlayerProfileId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<float>("TotalScore")
                         .HasColumnType("real");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ItemId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PlayerProfileId");
 
                     b.ToTable("Ratings");
                 });
@@ -166,11 +195,8 @@ namespace Storage.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nickname")
+                    b.Property<string>("ProviderId")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ProviderId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ProviderName")
                         .HasColumnType("nvarchar(max)");
@@ -180,12 +206,21 @@ namespace Storage.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Storage.Tables.Category", b =>
+                {
+                    b.HasOne("Storage.Tables.Game", "Game")
+                        .WithMany("Categories")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Storage.Tables.CategoryRating", b =>
                 {
                     b.HasOne("Storage.Tables.Category", "Category")
                         .WithMany("CategoryRatings")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Storage.Tables.Rating", "Rating")
@@ -198,7 +233,7 @@ namespace Storage.Migrations
             modelBuilder.Entity("Storage.Tables.Game", b =>
                 {
                     b.HasOne("Storage.Tables.User", "Master")
-                        .WithMany("Games")
+                        .WithMany("OwnedGames")
                         .HasForeignKey("MasterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -213,6 +248,20 @@ namespace Storage.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Storage.Tables.PlayerProfile", b =>
+                {
+                    b.HasOne("Storage.Tables.Game", "Game")
+                        .WithMany("PlayerProfiles")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Storage.Tables.User", "User")
+                        .WithMany("PlayerProfiles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+                });
+
             modelBuilder.Entity("Storage.Tables.Rating", b =>
                 {
                     b.HasOne("Storage.Tables.Item", "Item")
@@ -221,9 +270,10 @@ namespace Storage.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Storage.Tables.User", "User")
+                    b.HasOne("Storage.Tables.PlayerProfile", "PlayerProfile")
                         .WithMany("Ratings")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("PlayerProfileId")
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 #pragma warning restore 612, 618
         }

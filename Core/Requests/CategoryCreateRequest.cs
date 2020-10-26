@@ -8,5 +8,7 @@ namespace Core.Requests
         public string Name { get; set; }
         [Required]
         public int Weight { get; set; }
+        [Required]
+        public int GameId { get; set; }
     }
 }

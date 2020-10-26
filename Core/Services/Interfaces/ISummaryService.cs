@@ -5,6 +5,8 @@ namespace Core.Services.Interfaces
 {
     public interface ISummaryService
     {
-        public Task<Summary> Generate(int gameId);
+        public Task<Summary> GenerateAsync(int gameId);
+        public Summary GetByGameId(int gameId);
+        public Task DeleteAsync(int id);
     }
 }
