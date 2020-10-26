@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Storage.Tables;
+﻿using Storage.Tables;
 
 namespace Core.Dto
 {
     public class PlayerProfileDto
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Nickname { get; set; }
         public UserDto User { get; set; }
 

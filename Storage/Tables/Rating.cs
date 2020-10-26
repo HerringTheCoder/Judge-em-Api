@@ -11,7 +11,7 @@ namespace Storage.Tables
         public int ItemId { get; set; }
         public Item Item { get; set; }
         [ForeignKey(nameof(PlayerProfile))]
-        public int PlayerProfileId { get; set; }
+        public string PlayerProfileId { get; set; }
         public PlayerProfile PlayerProfile { get; set; }
         public ICollection<CategoryRating> CategoryRatings { get; set; }
     }

@@ -117,10 +117,9 @@ namespace Storage.Migrations
 
             modelBuilder.Entity("Storage.Tables.PlayerProfile", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("GameId")
                         .HasColumnType("int");
@@ -150,8 +149,8 @@ namespace Storage.Migrations
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PlayerProfileId")
-                        .HasColumnType("int");
+                    b.Property<string>("PlayerProfileId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<float>("TotalScore")
                         .HasColumnType("real");
@@ -274,8 +273,7 @@ namespace Storage.Migrations
                     b.HasOne("Storage.Tables.PlayerProfile", "PlayerProfile")
                         .WithMany("Ratings")
                         .HasForeignKey("PlayerProfileId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 #pragma warning restore 612, 618
         }

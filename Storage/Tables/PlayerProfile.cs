@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace Storage.Tables
@@ -7,7 +8,8 @@ namespace Storage.Tables
     public class PlayerProfile
     {
         [Key]
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string Id { get; set; }
         public string Nickname { get; set; }
         public int? UserId { get; set; }
         [JsonIgnore]

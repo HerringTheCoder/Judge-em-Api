@@ -15,23 +15,30 @@ namespace WebApi.Hubs
         private readonly IItemService _itemService;
         private readonly ISummaryService _summaryService;
         private readonly IRatingService _ratingService;
+        private readonly IPlayerProfileService _profileService;
 
-        public GameHub(IGameService gameService, IItemService itemService, ISummaryService summaryService, IRatingService ratingService)
+        public GameHub(IGameService gameService, IItemService itemService, ISummaryService summaryService, IRatingService ratingService, IPlayerProfileService profileService)
         {
             _gameService = gameService;
             _itemService = itemService;
             _summaryService = summaryService;
             _ratingService = ratingService;
+            _profileService = profileService;
         }
 
-        public async Task ConnectToGame(string gameCode)
+        public async Task ConnectToGame(string gameCode, string nickname)
         {
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
+                int userId = Context.UserIdentifier != null ? int.Parse(Context.UserIdentifier) : 0;
+                var playerProfile = await _profileService.CreatePlayerProfile(new PlayerProfileCreateRequest
+                { GameId = gameId, Nickname = nickname, UserId = userId });
+                await Clients.Caller.SendPlayerProfileId(playerProfile.Id);
+
                 await Groups.AddToGroupAsync(Context.ConnectionId, gameId.ToString());
-                await Clients.Group(gameCode).SendMessage($"Player {Context.User.Identity.Name} has joined!");
                 ConnectionObserver.ConnectionStates.Add(Context.ConnectionId, gameCode);
+                await Clients.GroupExcept(gameCode, Context.ConnectionId).SendMessage($"Player {Context.User.Identity.Name} has joined!");
             }
             else
             {
@@ -93,8 +100,12 @@ namespace WebApi.Hubs
             var gameId = _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
-                int.TryParse(Context.UserIdentifier, out int userId);
-                await _ratingService.AddRating(request, userId);
+                if (int.TryParse(Context.UserIdentifier, out int userId) && userId != 0)
+                {
+                    request.PlayerProfileId = await _profileService.GetProfileIdByUserGame(userId, gameId);
+                }
+
+                await _ratingService.AddRating(request);
                 var (ratingsCount, expectedRatingsCount) = await _gameService.GetVotingStatus(gameId, request.ItemId);
                 await Clients.Group(gameCode).RefreshVotingProgress(ratingsCount, expectedRatingsCount);
             }

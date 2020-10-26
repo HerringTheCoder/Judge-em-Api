@@ -22,18 +22,16 @@ namespace Storage.Migrations
                 name: "UserId",
                 table: "Ratings");
 
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AddColumn<string>(
                 name: "PlayerProfileId",
                 table: "Ratings",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "PlayerProfiles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(nullable: false),
                     Nickname = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: true),
                     GameId = table.Column<int>(nullable: false)

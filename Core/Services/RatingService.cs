@@ -22,7 +22,7 @@ namespace Core.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task AddRating(RatingCreateRequest request, int playerProfileId)
+        public async Task AddRating(RatingCreateRequest request)
         {
             var categoryRatings = request.CategoryRatings;
                 var categories = _categoryRepository
@@ -35,7 +35,7 @@ namespace Core.Services
                 var rating = new Rating
                 {
                     ItemId = request.ItemId,
-                    PlayerProfileId = playerProfileId,
+                    PlayerProfileId = request.PlayerProfileId,
                     TotalScore = GetTotalScore(scoreWeights)
                 };
                 _ratingRepository.Add(rating);

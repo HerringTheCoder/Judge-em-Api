@@ -11,6 +11,10 @@
     <Compile Remove="Migrations\20201014104141_InitDatabase.Designer.cs" />
     <Compile Remove="Migrations\20201025112538_AddPlayerProfilesTable.cs" />
     <Compile Remove="Migrations\20201025112538_AddPlayerProfilesTable.Designer.cs" />
+    <Compile Remove="Migrations\20201025113649_AddPlayerProfilesTable.cs" />
+    <Compile Remove="Migrations\20201025113649_AddPlayerProfilesTable.Designer.cs" />
+    <Compile Remove="Migrations\20201026111938_AlterProfileIdToString.cs" />
+    <Compile Remove="Migrations\20201026111938_AlterProfileIdToString.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
