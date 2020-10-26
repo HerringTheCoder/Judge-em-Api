@@ -1,9 +1,9 @@
-﻿using Storage.Tables;
+﻿using System.Security.Claims;
 
 namespace Authorization.Services.Interfaces
 {
     public interface IJwtService
     {
-        public string GenerateJwtToken(User user);
+        public string GenerateJwtToken(Claim[] claims);
     }
 }

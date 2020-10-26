@@ -1,62 +1,89 @@
-﻿using Authorization.Requests;
+﻿using System.IO;
 using Authorization.Services.Interfaces;
 using Storage.Repositories.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore.Internal;
 using Storage.Tables;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Authorization.Models;
+using Core.Helpers;
+using Microsoft.Extensions.Configuration;
 
 namespace Authorization.Services
 {
     class AuthService : IAuthService
     {
+        private const int GuestNicknameLength = 6;
         private readonly IJwtService _jwtService;
         private readonly IUserRepository _userRepository;
+        private readonly IFacebookApiService _facebookApiService;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(IJwtService jwtService, IUserRepository userRepository)
+        public AuthService(IJwtService jwtService, IUserRepository userRepository, IFacebookApiService facebookApiService, IConfiguration configuration)
         {
             _jwtService = jwtService;
             _userRepository = userRepository;
+            _facebookApiService = facebookApiService;
+            _configuration = configuration;
         }
 
-        public async Task<string> Register(RegisterRequest request)
+        public string GetUserToken(User user)
         {
-            var newUser = new User()
+            var claims = new[]
             {
-                Email = request.Email
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.AuthenticationMethod, user.ProviderName),
+                new Claim(ClaimTypes.Role, "User")
             };
-            _userRepository.Add(newUser);
-            await _userRepository.SaveChangesAsync();
 
-            var token = _jwtService.GenerateJwtToken(newUser);
+            string token = _jwtService.GenerateJwtToken(claims);
             return token;
         }
 
-        public async Task<string> GetToken(AuthenticateResult result)
+        public string GetGuestToken()
         {
-            var email = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
-            var user = _userRepository.Get(u => u.Email == email).FirstOrDefault();
-            if (user == null)
+            string nickname = "Guest" + CodeGenerator.GenerateNumerical(GuestNicknameLength);
+            var claims = new[]
             {
-                var name = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name).Value;
-                var providerId = result.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
-                var providerName = result.Principal.Claims.FirstOrDefault().Issuer;
-
-                user = new User()
-                {
-                    Email = email,
-                    Name = name,
-                    ProviderId = providerId,
-                    ProviderName = providerName
-                };
-                _userRepository.Add(user);
-                await _userRepository.SaveChangesAsync();
-            }
-            var token = _jwtService.GenerateJwtToken(user);
-
+                new Claim(ClaimTypes.Name, nickname),
+                new Claim(ClaimTypes.AuthenticationMethod, "Guest"),
+                new Claim(ClaimTypes.Role, "Guest"),
+            };
+            string token = _jwtService.GenerateJwtToken(claims);
             return token;
+        }
+
+        public async Task<User> AuthorizeFacebookUser(string accessToken)
+        {
+            var fbConfig = _configuration.GetSection("Authentication:Facebook");
+            var request = _facebookApiService.PrepareProfileFetchRequest(HttpMethod.Get, fbConfig["GetUserPath"], accessToken);
+            var response = await _facebookApiService.SendRequestAsync(request, fbConfig["GraphHostname"]);
+            var user = new User();
+            if (response.Content != null)
+            {
+                Stream json = await response.Content.ReadAsStreamAsync();
+                FacebookProfile fbProfile = await JsonSerializer.DeserializeAsync<FacebookProfile>(json,
+                    new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                user = _userRepository.Get(u => u.Email == fbProfile.Email).FirstOrDefault();
+                if (fbProfile.Email != null && fbProfile.Name != null && fbProfile.Id != null && user == null)
+                {
+                    user = new User
+                    {
+                        Email = fbProfile.Email,
+                        Name = fbProfile.Name,
+                        ProviderId = fbProfile.Id,
+                        ProviderName = "Facebook"
+                    };
+                    _userRepository.Add(user);
+                    await _userRepository.SaveChangesAsync();
+                }
+            }
+
+            return user;
         }
     }
 }
