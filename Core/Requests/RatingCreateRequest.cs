@@ -9,5 +9,6 @@ namespace Core.Requests
         public List<CategoryRatingCreateRequest> CategoryRatings { get; set; }
 
         public int ItemId { get; set; }
+        public string PlayerProfileId { get; set; }
     }
 }

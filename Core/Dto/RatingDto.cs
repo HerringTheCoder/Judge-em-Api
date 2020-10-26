@@ -8,13 +8,13 @@ namespace Core.Dto
     {
         public int Id { get; set; }
         public float TotalScore { get; set; }
-        public UserDto User { get; set; }
+        public PlayerProfileDto PlayerProfile { get; set; }
 
         public RatingDto(Rating rating)
         {
             Id = rating.Id;
             TotalScore = rating.TotalScore;
-            User = new UserDto(rating.User);
+            PlayerProfile = new PlayerProfileDto(rating.PlayerProfile);
         }
     }
 }

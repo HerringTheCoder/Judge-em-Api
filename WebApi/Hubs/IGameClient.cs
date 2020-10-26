@@ -12,5 +12,6 @@ namespace WebApi.Hubs
         Task SendMessage(string message);
         Task DisbandGame(string message);
         Task ShowSummary(Summary summary);
+        Task SendPlayerProfileId(string profileId);
     }
 }

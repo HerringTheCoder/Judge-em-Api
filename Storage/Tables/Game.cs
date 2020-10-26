@@ -23,5 +23,7 @@ namespace Storage.Tables
         public virtual ICollection<Item> Items { get; set; }
         [JsonIgnore]
         public ICollection<Category> Categories { get; set; }
+        [JsonIgnore]
+        public ICollection<PlayerProfile> PlayerProfiles { get; set; }
     }
 }

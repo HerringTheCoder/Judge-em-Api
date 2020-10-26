@@ -13,20 +13,20 @@ namespace Authorization
 {
     public static class ServiceCollectionExtension
     {
-        private static IConfiguration Configuration;
+        private static IConfiguration _configuration;
 
         public static IServiceCollection AddAuthorizationLibraryServices(this IServiceCollection services, IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
 
             services.AddControllers();
 
             services.AddAuthentication(option =>
-            {
-                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                {
+                    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-            })
+                })
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -35,9 +35,10 @@ namespace Authorization
                         ValidateAudience = true,
                         ValidateLifetime = false,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["JwtToken:Issuer"],
-                        ValidAudience = Configuration["JwtToken:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtToken:SecretKey"]))
+                        ValidIssuer = _configuration["JwtToken:Issuer"],
+                        ValidAudience = _configuration["JwtToken:Issuer"],
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtToken:SecretKey"]))
                     };
                     options.Events = new JwtBearerEvents
                     {
@@ -48,31 +49,17 @@ namespace Authorization
                             {
                                 context.Token = accessToken;
                             }
+
                             return Task.CompletedTask;
                         }
                     };
-                })
-                .AddCookie(Options =>
-                {
-                    Options.LoginPath = "/google-login";
-                    Options.LoginPath = "/facebook-login";
-                })
-                .AddGoogle(Options =>
-                {
-                    Options.ClientId = Configuration["Authentication:Google:ClientId"];
-                    Options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-
-                    Options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                })
-                .AddFacebook(Options =>
-                {
-                    Options.AppId = Configuration["Authentication:Facebook:AppId"];
-                    Options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                    Options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 });
 
+            services.AddHttpClient();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IHttpService, HttpService>();
+            services.AddScoped<IFacebookApiService, FacebookApiService>();
 
             return services;
         }

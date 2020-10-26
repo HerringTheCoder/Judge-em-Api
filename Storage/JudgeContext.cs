@@ -22,6 +22,21 @@ namespace Storage
                 .HasOne(cr => cr.Rating)
                 .WithMany(r => r.CategoryRatings)
                 .HasForeignKey(cr => cr.RatingId);
+
+            modelBuilder.Entity<PlayerProfile>()
+                .HasOne(pp => pp.Game)
+                .WithMany(g => g.PlayerProfiles)
+                .HasForeignKey(pp => pp.GameId);
+            modelBuilder.Entity<PlayerProfile>()
+                .HasOne(pp => pp.User)
+                .WithMany(u => u.PlayerProfiles)
+                .HasForeignKey(pp => pp.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<PlayerProfile>()
+                .HasMany(pp => pp.Ratings)
+                .WithOne(r => r.PlayerProfile)
+                .HasForeignKey(r => r.PlayerProfileId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Game> Games { get; set; }
@@ -30,5 +45,6 @@ namespace Storage
         public DbSet<Summary> Summaries { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategoryRating> CategoryRatings { get; set; }
+        public DbSet<PlayerProfile> PlayerProfiles { get; set; }
     }
 }

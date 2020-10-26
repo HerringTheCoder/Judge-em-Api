@@ -1,12 +1,12 @@
-﻿using Authorization.Requests;
-using Microsoft.AspNetCore.Authentication;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Storage.Tables;
 
 namespace Authorization.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<string> Register(RegisterRequest request);
-        Task<string> GetToken(AuthenticateResult result);
+        string GetUserToken(User user);
+        string GetGuestToken();
+        Task<User> AuthorizeFacebookUser(string accessToken);
     }
 }

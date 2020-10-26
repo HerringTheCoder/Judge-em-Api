@@ -7,14 +7,12 @@ namespace Core.Dto
         public int Id { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
-        public string Nickname { get; set; }
 
         public UserDto(User user)
         {
             Id = user.Id;
             Email = user.Email;
             Name = user.Name;
-            Nickname = user.Nickname;
         }
     }
 }
