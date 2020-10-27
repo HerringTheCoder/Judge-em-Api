@@ -24,6 +24,7 @@ namespace Testing.Mocks
                 });
             }
         }
+
         public IQueryable<Category> GetAll()
         {
             return Categories.AsQueryable();
