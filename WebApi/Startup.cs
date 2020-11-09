@@ -23,23 +23,23 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:8080");
+                        builder.AllowAnyHeader();
+                        builder.AllowAnyMethod();
+                        builder.AllowCredentials();
+                    });
+            });
             services.AddControllers();
             services.AddSwaggerGen();
             services.AddSignalR();
             services.AddCoreLibraryServices();
             services.AddAuthorizationLibraryServices(Configuration);
             services.AddStorageLibraryServices(Configuration.GetConnectionString("JudgeDbConnection"));
-
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin();
-                        builder.AllowAnyHeader();
-                        builder.AllowAnyMethod();
-                    });
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,9 +63,9 @@ namespace WebApi
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseCors();
-
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthentication();
 

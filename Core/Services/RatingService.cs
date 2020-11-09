@@ -45,8 +45,10 @@ namespace Core.Services
 
         private float GetTotalScore(List<ScoreWeight> scoreWeights)
         {
-            float totalScore = scoreWeights.Aggregate<ScoreWeight, float>(0, (current, scoreWeight) => current + scoreWeight.Score * scoreWeight.Weight);
-            return totalScore != 0 ? totalScore / scoreWeights.Count() : 0;
+            float weightedValueSum = scoreWeights.Sum(sw => sw.Score * sw.Score);
+            float weightSum = scoreWeights.Sum(sw => sw.Weight);
+
+            return weightSum != 0 ? weightedValueSum / weightSum : 0;
         }
 
         private async void AddCategoryRatings(IEnumerable<CategoryRatingCreateRequest> categoryRatings, int ratingId)

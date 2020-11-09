@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.Requests;
 using Core.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Storage.Repositories.Interfaces;
 using Storage.Tables;
 
@@ -17,12 +18,11 @@ namespace Core.Services
         }
         public async Task<List<Category>> GetCategoriesByGameId(int gameId)
         {
-            var categories = new List<Category>();
-            await Task.Run(() => categories = _categoryRepository
+            var categories = await _categoryRepository
                 .GetAll()
                 .Where(c => c.GameId == gameId)
-                .ToList()
-                );
+                .ToListAsync();
+
             return categories;
         }
 

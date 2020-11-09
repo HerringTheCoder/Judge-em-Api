@@ -16,15 +16,31 @@ namespace Core.Services
         {
             _playerProfileRepository = playerProfileRepository;
         }
-        public async Task<PlayerProfile> CreatePlayerProfile(PlayerProfileCreateRequest request)
+        public async Task<PlayerProfile> CreateOrUpdatePlayerProfile(PlayerProfileCreateRequest request)
         {
-            var playerProfile = new PlayerProfile
+            PlayerProfile playerProfile = null;
+            if (request.UserId != null)
             {
-                GameId = request.GameId,
-                Nickname = request.Nickname,
-                UserId = request.UserId > 0 ? request.UserId : default
-            };
-            _playerProfileRepository.Add(playerProfile);
+                playerProfile = _playerProfileRepository
+                    .Get(p => p.GameId == request.GameId && p.UserId == request.UserId)
+                    .FirstOrDefault();
+            }
+
+            if (playerProfile != null)
+            {
+                playerProfile.Nickname = request.Nickname;
+                _playerProfileRepository.Update(playerProfile);
+            }
+            else
+            {
+                playerProfile = new PlayerProfile
+                {
+                    GameId = request.GameId,
+                    Nickname = request.Nickname,
+                    UserId = request.UserId > 0 ? request.UserId : null
+                };
+                _playerProfileRepository.Add(playerProfile);
+            }
             await _playerProfileRepository.SaveChangesAsync();
 
             return playerProfile;

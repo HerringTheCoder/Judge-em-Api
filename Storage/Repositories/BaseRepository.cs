@@ -21,7 +21,7 @@ namespace Storage.Repositories
 
         public virtual IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> predicate)
         {
-            return Context.Set<TEntity>().Where(predicate).Take(1);
+            return Context.Set<TEntity>().Where(predicate);
         }
 
         public virtual void Add(TEntity entity)

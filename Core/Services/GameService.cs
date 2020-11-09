@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Helpers;
@@ -76,6 +77,15 @@ namespace Core.Services
             return _gameRepository.GetActiveGameIdByCode(gameCode);
         }
 
+        public bool IsUserGameOwner(int? userId, int gameId)
+        {
+            if (userId == null)
+                return false;
+
+            var game = _gameRepository.Get(g => g.Id == gameId && g.MasterId == userId);
+            return game != null;
+        }
+
         public async Task<(int ratingsCount, int expectedRatingsCount)> GetVotingStatus(int gameId, int itemId)
         {
             int ratingsCount = 0;
@@ -85,7 +95,7 @@ namespace Core.Services
             {
                 var ratings = game.Items.First().Ratings;
                 ratingsCount = ratings.Count();
-                expectedRatingsCount = ConnectionObserver.ConnectionStates.Count(entry => entry.Value == game.Code);
+                expectedRatingsCount = ConnectionObserver.ConnectionStates.Count(entry => entry.Value.Group == game.Code);
             }
 
             return (ratingsCount, expectedRatingsCount);
