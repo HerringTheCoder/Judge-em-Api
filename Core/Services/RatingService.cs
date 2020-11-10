@@ -53,14 +53,29 @@ namespace Core.Services
 
         private async void AddCategoryRatings(IEnumerable<CategoryRatingCreateRequest> categoryRatings, int ratingId)
         {
+            var oldCategoryRatings = _categoryRatingRepository.GetAll()
+                .Where(cr => cr.RatingId == ratingId)
+                .Where(cr => categoryRatings.Any(c => c.CategoryId == cr.CategoryId))
+                .ToList();
+
             foreach (var categoryRating in categoryRatings)
             {
-                _categoryRatingRepository.Add(new CategoryRating
+                int categoryId = categoryRating.CategoryId;
+                if (oldCategoryRatings.Any(ocr => ocr.CategoryId == categoryId))
                 {
-                    Score = categoryRating.Score,
-                    CategoryId = categoryRating.CategoryId,
-                    RatingId = ratingId
-                });
+                    var oldCategoryRating = oldCategoryRatings.First(ocr => ocr.CategoryId == categoryId);
+                    oldCategoryRating.Score = categoryRating.Score;
+                    _categoryRatingRepository.Update(oldCategoryRating);
+                }
+                else
+                {
+                    _categoryRatingRepository.Add(new CategoryRating
+                    {
+                        Score = categoryRating.Score,
+                        CategoryId = categoryRating.CategoryId,
+                        RatingId = ratingId
+                    });
+                }
             }
             await _ratingRepository.SaveChangesAsync();
         }

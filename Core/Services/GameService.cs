@@ -93,7 +93,7 @@ namespace Core.Services
             var game = await _gameRepository.GetGameWithSingleItemRatings(gameId, itemId).FirstOrDefaultAsync();
             if (game != null)
             {
-                var ratings = game.Items.First().Ratings;
+                var ratings = game.Items.FirstOrDefault().Ratings;
                 ratingsCount = ratings.Count();
                 expectedRatingsCount = ConnectionObserver.ConnectionStates.Count(entry => entry.Value.Group == game.Code);
             }

@@ -20,12 +20,12 @@ namespace WebApi.Hubs
         private readonly ICategoryService _categoryService;
         private readonly ILogger<GameHub> _logger;
 
-        public GameHub(IGameService gameService, 
-            IItemService itemService, 
-            ISummaryService summaryService, 
-            IRatingService ratingService, 
-            ICategoryService categoryService, 
-            IPlayerProfileService profileService, 
+        public GameHub(IGameService gameService,
+            IItemService itemService,
+            ISummaryService summaryService,
+            IRatingService ratingService,
+            ICategoryService categoryService,
+            IPlayerProfileService profileService,
             ILogger<GameHub> logger)
         {
             _gameService = gameService;
@@ -155,12 +155,14 @@ namespace WebApi.Hubs
                 }
 
                 await _ratingService.AddRating(request);
-                var (ratingsCount, expectedRatingsCount) = await _gameService.GetVotingStatus(gameId, request.ItemId);
+                var (ratingsCount, expectedRatingsCount) =
+                    await _gameService.GetVotingStatus(gameId, request.ItemId);
                 await Clients.Group(gameCode).RefreshVotingProgress(ratingsCount, expectedRatingsCount);
             }
             else
             {
-                await Clients.Caller.SendMessage("Failed to add rating. Current game not found.", MessageType.Error);
+                await Clients.Caller.SendMessage("Failed to add rating. Current game not found.",
+                    MessageType.Error);
             }
         }
     }
