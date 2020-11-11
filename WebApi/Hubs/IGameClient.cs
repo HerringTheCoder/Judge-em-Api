@@ -16,5 +16,6 @@ namespace WebApi.Hubs
         Task ShowSummary(Summary summary);
         Task SendPlayerProfileId(string profileId);
         Task SendMessage(string message, MessageType messageType = MessageType.Undefined);
+        Task RequestCurrentItemId(string gameCode);
     }
 }

@@ -13,7 +13,7 @@ namespace Storage.Repositories
         public IQueryable<Game> GetGameWithSingleItemRatings(int gameId, int itemId)
         {
             return Get(g => g.Id == gameId)
-                .Include(g => g.Items.FirstOrDefault(i => i.Id == itemId))
+                .Include(g => g.Items.Where(i => i.Id == itemId))
                 .ThenInclude(i => i.Ratings);
         }
 

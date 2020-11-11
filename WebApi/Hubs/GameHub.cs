@@ -56,7 +56,8 @@ namespace WebApi.Hubs
                 ConnectionObserver.ConnectionStates[Context.ConnectionId] = new PlayerEntry
                 {
                     Group = gameCode,
-                    Nickname = playerProfile.Nickname
+                    PlayerProfileId = playerProfile.Id,
+                    Nickname = playerProfile.Nickname,
                 };
                 await Clients.GroupExcept(gameCode, Context.ConnectionId).SendMessage($"Player {playerProfile.Nickname} has joined!", MessageType.Success);
 
@@ -70,7 +71,9 @@ namespace WebApi.Hubs
                 if (_gameService.IsUserGameOwner(userId, gameId))
                 {
                     await Clients.Caller.AllowGameControl((int)userId);
+                    await Groups.AddToGroupAsync(Context.ConnectionId, $"{gameCode}-master");
                 }
+                await Clients.Group($"{gameCode}-master").RequestCurrentItemId(gameCode);
             }
             else
             {
@@ -112,6 +115,11 @@ namespace WebApi.Hubs
             {
                 await Clients.Caller.SendMessage("Game not found.", MessageType.Error);
             }
+        }
+
+        public async Task SynchronizeCurrentItem(string gameCode, int itemId)
+        {
+            await Clients.OthersInGroup(gameCode).RefreshCurrentItemId(itemId);
         }
 
         public async Task AddItem(ItemCreateRequest request, string gameCode)

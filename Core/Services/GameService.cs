@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Helpers;
@@ -93,7 +92,7 @@ namespace Core.Services
             var game = await _gameRepository.GetGameWithSingleItemRatings(gameId, itemId).FirstOrDefaultAsync();
             if (game != null)
             {
-                var ratings = game.Items.FirstOrDefault().Ratings;
+                var ratings = game.Items.FirstOrDefault()?.Ratings;
                 ratingsCount = ratings.Count();
                 expectedRatingsCount = ConnectionObserver.ConnectionStates.Count(entry => entry.Value.Group == game.Code);
             }

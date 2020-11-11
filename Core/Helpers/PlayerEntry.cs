@@ -6,6 +6,8 @@ namespace Core.Helpers
     {
         [JsonIgnore]
         public string Group { get; set; }
+        [JsonIgnore]
+        public string PlayerProfileId { get; set; }
         public string Nickname { get; set; }
     }
 }
