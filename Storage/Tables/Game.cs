@@ -13,10 +13,12 @@ namespace Storage.Tables
         public int Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+
         [ForeignKey(nameof(User))]
         public int MasterId { get; set; }
         [JsonIgnore]
         public User Master { get; set; }
+
         public DateTime StartedAt { get; set; }
         public DateTime FinishedAt { get; set; }
         [JsonIgnore]

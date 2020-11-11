@@ -22,12 +22,13 @@ namespace Core.Services
         public async Task<Summary> GenerateAsync(int gameId)
         {
             var game = _gameRepository.Get(g => g.Id == gameId)
+                .Include(g => g.Master)
                 .Include(g => g.Items)
                 .ThenInclude(i => i.Ratings)
                 .ThenInclude(r => r.PlayerProfile)
                 .FirstOrDefault();
-            var gameDto = new GameDto(game);
-            string jsonResult = JsonSerializer.Serialize(gameDto);
+            var gameSummaryDto = new GameSummaryDto(game);
+            string jsonResult = JsonSerializer.Serialize(gameSummaryDto);
             var summary = new Summary
             {
                 GameId = gameId,

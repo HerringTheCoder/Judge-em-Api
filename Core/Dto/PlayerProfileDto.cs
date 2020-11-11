@@ -12,7 +12,7 @@ namespace Core.Dto
         {
             Id = playerProfile.Id;
             Nickname = playerProfile.Nickname;
-            User = new UserDto(playerProfile.User);
+            User = playerProfile.User != null ? new UserDto(playerProfile.User) : null;
         }
     }
 }

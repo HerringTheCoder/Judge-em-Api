@@ -4,7 +4,7 @@ using Storage.Tables;
 
 namespace Core.Dto
 {
-    public class GameDto
+    public class GameSummaryDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -13,7 +13,7 @@ namespace Core.Dto
         public DateTime FinishedAt { get; set; }
         public List<ItemDto> Items { get; set; }
 
-        public GameDto(Game game)
+        public GameSummaryDto(Game game)
         {
             Id = game.Id;
             Name = game.Name;

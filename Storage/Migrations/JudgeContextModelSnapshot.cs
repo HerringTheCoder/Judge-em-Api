@@ -15,16 +15,16 @@ namespace Storage.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.9")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "3.1.9");
 
             modelBuilder.Entity("Storage.Tables.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("GameId")
                         .HasColumnType("int");
@@ -65,7 +65,7 @@ namespace Storage.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
@@ -94,7 +94,7 @@ namespace Storage.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -144,7 +144,7 @@ namespace Storage.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("ItemId")
                         .HasColumnType("int");
@@ -169,7 +169,7 @@ namespace Storage.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<int>("GameId")
                         .HasColumnType("int");
@@ -187,7 +187,7 @@ namespace Storage.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .UseIdentityColumn();
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -213,6 +213,8 @@ namespace Storage.Migrations
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("Storage.Tables.CategoryRating", b =>
@@ -228,6 +230,10 @@ namespace Storage.Migrations
                         .HasForeignKey("RatingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Rating");
                 });
 
             modelBuilder.Entity("Storage.Tables.Game", b =>
@@ -237,6 +243,8 @@ namespace Storage.Migrations
                         .HasForeignKey("MasterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Master");
                 });
 
             modelBuilder.Entity("Storage.Tables.Item", b =>
@@ -260,6 +268,10 @@ namespace Storage.Migrations
                         .WithMany("PlayerProfiles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Game");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Storage.Tables.Rating", b =>
@@ -274,6 +286,46 @@ namespace Storage.Migrations
                         .WithMany("Ratings")
                         .HasForeignKey("PlayerProfileId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Item");
+
+                    b.Navigation("PlayerProfile");
+                });
+
+            modelBuilder.Entity("Storage.Tables.Category", b =>
+                {
+                    b.Navigation("CategoryRatings");
+                });
+
+            modelBuilder.Entity("Storage.Tables.Game", b =>
+                {
+                    b.Navigation("Categories");
+
+                    b.Navigation("Items");
+
+                    b.Navigation("PlayerProfiles");
+                });
+
+            modelBuilder.Entity("Storage.Tables.Item", b =>
+                {
+                    b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("Storage.Tables.PlayerProfile", b =>
+                {
+                    b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("Storage.Tables.Rating", b =>
+                {
+                    b.Navigation("CategoryRatings");
+                });
+
+            modelBuilder.Entity("Storage.Tables.User", b =>
+                {
+                    b.Navigation("OwnedGames");
+
+                    b.Navigation("PlayerProfiles");
                 });
 #pragma warning restore 612, 618
         }
