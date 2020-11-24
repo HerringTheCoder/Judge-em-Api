@@ -74,6 +74,7 @@ namespace WebApi.Hubs
                     await Groups.AddToGroupAsync(Context.ConnectionId, $"{gameCode}-master");
                 }
                 await Clients.Group($"{gameCode}-master").RequestCurrentItemId(gameCode);
+                await Clients.Caller.SendMessage("Game joined successfully", MessageType.Success);
             }
             else
             {
@@ -169,8 +170,7 @@ namespace WebApi.Hubs
             }
             else
             {
-                await Clients.Caller.SendMessage("Failed to add rating. Current game not found.",
-                    MessageType.Error);
+                await Clients.Caller.SendMessage("Failed to add rating. Current game not found.", MessageType.Error);
             }
         }
     }

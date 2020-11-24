@@ -1,12 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Core.Dto;
 using Storage.Tables;
 
 namespace Core.Services.Interfaces
 {
     public interface ISummaryService
     {
-        public Task<Summary> GenerateAsync(int gameId);
-        public Summary GetByGameId(int gameId);
-        public Task DeleteAsync(int id);
+        Task<Summary> GenerateAsync(int gameId);
+        Summary GetByGameId(int gameId);
+        Task DeleteAsync(int id);
+        Task<List<UserSummaryDto>> GetSummariesByUserId(int userId);
     }
 }

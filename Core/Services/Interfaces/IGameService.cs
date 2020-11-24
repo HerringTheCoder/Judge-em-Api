@@ -11,6 +11,7 @@ namespace Core.Services.Interfaces
         Task StartGame(int gameId);
         Task FinishGame(int gameId);
         int FindActiveGameIdByCode(string gameCode);
+        int FindOwnedActiveGameId(string gameCode, int userId);
         bool IsUserGameOwner(int? userId, int gameId);
         Task<(int ratingsCount, int expectedRatingsCount)> GetVotingStatus(int gameId, int itemId);
     }

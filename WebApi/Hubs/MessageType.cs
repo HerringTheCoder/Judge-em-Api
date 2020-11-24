@@ -5,6 +5,6 @@
         Undefined,
         Success,
         Error,
-        Warning
+        Warning,
     }
 }

@@ -24,5 +24,13 @@ namespace Storage.Repositories
                 .Select(g => g.Id)
                 .FirstOrDefault();
         }
+
+        public int GetOwnedActiveGameIdByCode(string gameCode, int userId)
+        {
+            return GetAll()
+                .Where(g => g.Code == gameCode && g.FinishedAt == DateTime.MinValue && g.MasterId == userId)
+                .Select(g => g.Id)
+                .FirstOrDefault();
+        }
     }
 }

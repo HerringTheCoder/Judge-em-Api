@@ -28,7 +28,7 @@ namespace WebApi
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:8080");
+                        builder.WithOrigins("https://judge-em.github.io", "http://localhost:8080");
                         builder.AllowAnyHeader();
                         builder.AllowAnyMethod();
                         builder.AllowCredentials();

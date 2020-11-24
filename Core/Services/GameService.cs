@@ -81,8 +81,13 @@ namespace Core.Services
             if (userId == null)
                 return false;
 
-            var game = _gameRepository.Get(g => g.Id == gameId && g.MasterId == userId);
+            var game = _gameRepository.Get(g => g.Id == gameId && g.MasterId == userId).FirstOrDefault();
             return game != null;
+        }
+
+        public int FindOwnedActiveGameId(string gameCode, int userId)
+        {
+            return _gameRepository.GetOwnedActiveGameIdByCode(gameCode, userId);
         }
 
         public async Task<(int ratingsCount, int expectedRatingsCount)> GetVotingStatus(int gameId, int itemId)
