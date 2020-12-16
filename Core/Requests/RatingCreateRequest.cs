@@ -7,7 +7,6 @@ namespace Core.Requests
     {
         [Required]
         public List<CategoryRatingCreateRequest> CategoryRatings { get; set; }
-
         public int ItemId { get; set; }
         public string PlayerProfileId { get; set; }
     }

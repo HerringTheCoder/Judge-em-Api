@@ -5,7 +5,7 @@ namespace Core.Requests
     public class CategoryRatingCreateRequest
     {
         [Required]
-        public int Score { get; set; }
+        public float Score { get; set; }
         [Required]
         public int CategoryId { get; set; }
     }
