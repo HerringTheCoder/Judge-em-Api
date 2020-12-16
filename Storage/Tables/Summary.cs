@@ -9,6 +9,7 @@ namespace Storage.Tables
         public int Id { get; set; }
         [ForeignKey(nameof(Game))]
         public int GameId { get; set; }
+        public Game Game { get; set; }
         public string Result { get; set; }
     }
 }

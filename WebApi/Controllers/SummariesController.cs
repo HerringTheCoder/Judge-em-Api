@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Core.Dto;
 using Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -45,6 +47,14 @@ namespace WebApi.Controllers
         {
             await _summaryService.DeleteAsync(id);
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("user/{userId}")]
+        public async Task<List<UserSummaryDto>> GetUserSummaries(int userId)
+        {
+            var summaries = await _summaryService.GetSummariesByUserId(userId);
+            return summaries;
         }
     }
 }

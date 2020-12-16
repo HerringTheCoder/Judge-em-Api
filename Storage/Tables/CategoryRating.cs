@@ -10,6 +10,6 @@ namespace Storage.Tables
         public int? RatingId { get; set; }
         [JsonIgnore]
         public Rating Rating { get; set; }
-        public int Score { get; set; }
+        public float Score { get; set; }
     }
 }

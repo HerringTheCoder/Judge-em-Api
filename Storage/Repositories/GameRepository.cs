@@ -13,7 +13,7 @@ namespace Storage.Repositories
         public IQueryable<Game> GetGameWithSingleItemRatings(int gameId, int itemId)
         {
             return Get(g => g.Id == gameId)
-                .Include(g => g.Items.FirstOrDefault(i => i.Id == itemId))
+                .Include(g => g.Items.Where(i => i.Id == itemId))
                 .ThenInclude(i => i.Ratings);
         }
 
@@ -21,6 +21,14 @@ namespace Storage.Repositories
         {
             return GetAll()
                 .Where(g => g.Code == gameCode && g.FinishedAt == DateTime.MinValue)
+                .Select(g => g.Id)
+                .FirstOrDefault();
+        }
+
+        public int GetOwnedActiveGameIdByCode(string gameCode, int userId)
+        {
+            return GetAll()
+                .Where(g => g.Code == gameCode && g.FinishedAt == DateTime.MinValue && g.MasterId == userId)
                 .Select(g => g.Id)
                 .FirstOrDefault();
         }

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Core.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -10,7 +12,7 @@ namespace WebApi.Hubs
     {
         public async Task StartGame(string gameCode, int itemId)
         {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            var gameId = _gameService.FindOwnedActiveGameId(gameCode, int.Parse(Context.UserIdentifier));
             if (gameId != 0)
             {
                 await _gameService.StartGame(gameId);
@@ -24,7 +26,7 @@ namespace WebApi.Hubs
 
         public async Task FinishGame(string gameCode)
         {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            var gameId = _gameService.FindOwnedActiveGameId(gameCode, int.Parse(Context.UserIdentifier));
             if (gameId != 0)
             {
                 await _gameService.FinishGame(gameId);
@@ -39,7 +41,7 @@ namespace WebApi.Hubs
 
         public async Task DisbandGame(string gameCode)
         {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            var gameId = _gameService.FindOwnedActiveGameId(gameCode, int.Parse(Context.UserIdentifier));
             if (gameId != 0)
             {
                 await _gameService.DisbandGame(gameId);
@@ -54,7 +56,7 @@ namespace WebApi.Hubs
 
         public async Task PushItemId(string gameCode, int itemId)
         {
-            int gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            var gameId = _gameService.FindOwnedActiveGameId(gameCode, int.Parse(Context.UserIdentifier));
             if (gameId != 0)
             {
                 await Clients.Group(gameCode).RefreshCurrentItemId(itemId);

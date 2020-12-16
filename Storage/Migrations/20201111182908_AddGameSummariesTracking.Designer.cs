@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Storage;
 
 namespace Storage.Migrations
 {
     [DbContext(typeof(JudgeContext))]
-    partial class JudgeContextModelSnapshot : ModelSnapshot
+    [Migration("20201111182908_AddGameSummariesTracking")]
+    partial class AddGameSummariesTracking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,8 +52,8 @@ namespace Storage.Migrations
                     b.Property<int?>("RatingId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Score")
-                        .HasColumnType("real");
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
 
                     b.HasKey("CategoryId", "RatingId");
 
@@ -179,8 +181,7 @@ namespace Storage.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameId")
-                        .IsUnique();
+                    b.HasIndex("GameId");
 
                     b.ToTable("Summaries");
                 });
@@ -298,8 +299,8 @@ namespace Storage.Migrations
             modelBuilder.Entity("Storage.Tables.Summary", b =>
                 {
                     b.HasOne("Storage.Tables.Game", "Game")
-                        .WithOne("Summary")
-                        .HasForeignKey("Storage.Tables.Summary", "GameId")
+                        .WithMany("Summaries")
+                        .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -319,7 +320,7 @@ namespace Storage.Migrations
 
                     b.Navigation("PlayerProfiles");
 
-                    b.Navigation("Summary");
+                    b.Navigation("Summaries");
                 });
 
             modelBuilder.Entity("Storage.Tables.Item", b =>

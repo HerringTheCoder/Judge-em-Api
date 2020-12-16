@@ -7,5 +7,6 @@ namespace Storage.Repositories.Interfaces
     {
         IQueryable<Game> GetGameWithSingleItemRatings(int gameId, int itemId);
         int GetActiveGameIdByCode(string gameCode);
+        int GetOwnedActiveGameIdByCode(string gameCode, int userId);
     }
 }

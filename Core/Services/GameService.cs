@@ -76,6 +76,20 @@ namespace Core.Services
             return _gameRepository.GetActiveGameIdByCode(gameCode);
         }
 
+        public bool IsUserGameOwner(int? userId, int gameId)
+        {
+            if (userId == null)
+                return false;
+
+            var game = _gameRepository.Get(g => g.Id == gameId && g.MasterId == userId).FirstOrDefault();
+            return game != null;
+        }
+
+        public int FindOwnedActiveGameId(string gameCode, int userId)
+        {
+            return _gameRepository.GetOwnedActiveGameIdByCode(gameCode, userId);
+        }
+
         public async Task<(int ratingsCount, int expectedRatingsCount)> GetVotingStatus(int gameId, int itemId)
         {
             int ratingsCount = 0;
@@ -83,9 +97,9 @@ namespace Core.Services
             var game = await _gameRepository.GetGameWithSingleItemRatings(gameId, itemId).FirstOrDefaultAsync();
             if (game != null)
             {
-                var ratings = game.Items.First().Ratings;
+                var ratings = game.Items.FirstOrDefault()?.Ratings;
                 ratingsCount = ratings.Count();
-                expectedRatingsCount = ConnectionObserver.ConnectionStates.Count(entry => entry.Value == game.Code);
+                expectedRatingsCount = ConnectionObserver.ConnectionStates.Count(entry => entry.Value.Group == game.Code);
             }
 
             return (ratingsCount, expectedRatingsCount);

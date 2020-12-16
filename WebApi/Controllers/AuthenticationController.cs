@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Authorization.Requests;
 using Authorization.Services.Interfaces;
 using Core.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -18,13 +19,13 @@ namespace WebApi.Controllers
             _authService = authService;
         }
 
-        [HttpGet]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("login/facebook")]
-        public async Task<IActionResult> FacebookLogin([FromQuery] string accessToken)
+        public async Task<IActionResult> FacebookLogin([FromBody] FacebookAuthorizationRequest request)
         {
-            var user = await _authService.AuthorizeFacebookUser(accessToken);
+            var user = await _authService.AuthorizeFacebookUser(request.Token);
             if(user == null)
             {
                 return Unauthorized();
@@ -35,7 +36,7 @@ namespace WebApi.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Route("login/guest")]
         public IActionResult GuestLogin()
