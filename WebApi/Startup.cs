@@ -3,10 +3,12 @@ using Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Storage;
+using WebApi.Filters;
 using WebApi.Hubs;
 
 namespace WebApi
@@ -36,7 +38,10 @@ namespace WebApi
             });
             services.AddControllers();
             services.AddSwaggerGen();
-            services.AddSignalR();
+            services.AddSignalR().AddHubOptions<GameHub>(options =>
+            {
+                options.AddFilter<GameHubFilter>();
+            });
             services.AddCoreLibraryServices();
             services.AddAuthorizationLibraryServices(Configuration);
             services.AddStorageLibraryServices(Configuration.GetConnectionString("JudgeDbConnection"));
