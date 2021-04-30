@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Core.Dto;
 using Core.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Storage.Repositories.Interfaces;
 using Storage.Tables;
 
@@ -25,12 +23,7 @@ namespace Core.Services
         }
         public async Task<Summary> GenerateAsync(int gameId)
         {
-            var game = _gameRepository.Get(g => g.Id == gameId)
-                .Include(g => g.Master)
-                .Include(g => g.Items)
-                .ThenInclude(i => i.Ratings)
-                .ThenInclude(r => r.PlayerProfile)
-                .FirstOrDefault();
+            var game = await _gameRepository.GetFullGameDataById(gameId);
             var gameSummaryDto = new GameSummaryDto(game);
             string jsonResult = JsonSerializer.Serialize(gameSummaryDto);
             var summary = new Summary
@@ -39,37 +32,27 @@ namespace Core.Services
                 Result = jsonResult
             };
 
-            var existingSummary = _summaryRepository.Get(s => s.GameId == gameId).FirstOrDefault();
+            var existingSummary = _summaryRepository.GetFirstByFilterAsync(s => s.GameId == gameId);
             if (existingSummary != null)
-                _summaryRepository.Update(summary);
-            else
-                _summaryRepository.Add(summary);
+                return await _summaryRepository.UpdateAsync(summary);
 
-            await _summaryRepository.SaveChangesAsync();
-            return summary;
+            return await _summaryRepository.AddAsync(summary);
         }
 
-        public Summary GetByGameId(int gameId)
+        public async Task<Summary> GetByGameId(int gameId)
         {
-            var summary = _summaryRepository.Get(s => s.GameId == gameId).FirstOrDefault();
-            return summary;
+            return await _summaryRepository.GetFirstByFilterAsync(s => s.GameId == gameId);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var summary = _summaryRepository.Get(s => s.Id == id).FirstOrDefault();
-            _summaryRepository.Delete(summary);
-            await _summaryRepository.SaveChangesAsync();
+            var summary = await _summaryRepository.GetFirstByFilterAsync(s => s.Id == id);
+            await _summaryRepository.DeleteAsync(summary);
         }
 
         public async Task<List<UserSummaryDto>> GetSummariesByUserId(int userId)
         {
-            var playerProfiles = await _playerProfileRepository.GetAll()
-                .Where(p => p.UserId == userId)
-                .Where(p => p.Game.FinishedAt != DateTime.MinValue)
-                .Include(p => p.Game)
-                    .ThenInclude(g => g.Summary)
-                .ToListAsync();
+            var playerProfiles = await _playerProfileRepository.GetPlayerProfilesByUserIdWithFinishedGames(userId);
 
             var userSummariesDto = playerProfiles.Select(p => new UserSummaryDto
             {

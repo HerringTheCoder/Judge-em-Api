@@ -68,7 +68,8 @@ namespace Authorization.Services
                 Stream json = await response.Content.ReadAsStreamAsync();
                 FacebookProfile fbProfile = await JsonSerializer.DeserializeAsync<FacebookProfile>(json,
                     new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-                user = _userRepository.Get(u => u.Email == fbProfile.Email).FirstOrDefault();
+
+                user = await _userRepository.GetFirstByFilterAsync(u => u.Email == fbProfile.Email);
                 if (fbProfile.Email != null && fbProfile.Name != null && fbProfile.Id != null && user == null)
                 {
                     user = new User
@@ -78,8 +79,7 @@ namespace Authorization.Services
                         ProviderId = fbProfile.Id,
                         ProviderName = "Facebook"
                     };
-                    _userRepository.Add(user);
-                    await _userRepository.SaveChangesAsync();
+                    await _userRepository.AddAsync(user);
                 }
             }
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Storage.Repositories.Interfaces;
 using Storage.Tables;
@@ -12,25 +14,45 @@ namespace Storage.Repositories
 
         public IQueryable<Game> GetGameWithSingleItemRatings(int gameId, int itemId)
         {
-            return Get(g => g.Id == gameId)
+            return Context.Games
+                .Where(g => g.Id == gameId)
                 .Include(g => g.Items.Where(i => i.Id == itemId))
                 .ThenInclude(i => i.Ratings);
         }
 
-        public int GetActiveGameIdByCode(string gameCode)
+        public async Task<int> GetActiveGameIdByCode(string gameCode)
         {
-            return GetAll()
+            return await Context.Games
                 .Where(g => g.Code == gameCode && g.FinishedAt == DateTime.MinValue)
                 .Select(g => g.Id)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
-        public int GetOwnedActiveGameIdByCode(string gameCode, int userId)
+        public async Task<int> GetOwnedActiveGameIdByCode(string gameCode, int userId)
         {
-            return GetAll()
+            return await Context.Games
                 .Where(g => g.Code == gameCode && g.FinishedAt == DateTime.MinValue && g.MasterId == userId)
                 .Select(g => g.Id)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<string>> GetActiveGamesCodes()
+        {
+            return await Context.Games
+                .Where(g => g.Code != null && g.FinishedAt != DateTime.MinValue)
+                .Select(g => g.Code)
+                .ToListAsync();
+        }
+
+        public async Task<Game> GetFullGameDataById(int gameId)
+        {
+            return await Context.Games
+                .Where(g => g.Id == gameId)
+                .Include(g => g.Master)
+                .Include(g => g.Items)
+                    .ThenInclude(i => i.Ratings)
+                        .ThenInclude(r => r.PlayerProfile)
+                .FirstOrDefaultAsync();
         }
     }
 }

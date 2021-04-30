@@ -22,10 +22,8 @@ namespace Core.Services
 
         public async Task<Game> CreateGame(GameCreateRequest request, int userId)
         {
-            var activeCodes = _gameRepository
-                .Get(g => g.Code != null && g.FinishedAt != DateTime.MinValue)
-                .Select(g => g.Code)
-                .ToList();
+            var activeCodes = await _gameRepository.GetActiveGamesCodes();
+
             string code = "";
             do
             {
@@ -38,42 +36,41 @@ namespace Core.Services
                 Name = request.Name,
                 Code = code
             };
-            _gameRepository.Add(game);
-            await _gameRepository.SaveChangesAsync();
-            return game;
+
+            return await _gameRepository.AddAsync(game);
         }
 
         public async Task DisbandGame(int id)
         {
-            var game = _gameRepository.Get(g => g.Id == id).First();
-            _gameRepository.Delete(game);
-            await _gameRepository.SaveChangesAsync();
+            var game = await _gameRepository.GetFirstByFilterAsync(g => g.Id == id);
+            await _gameRepository.DeleteAsync(game);
         }
 
         public async Task StartGame(int id)
         {
-            var game = _gameRepository.Get(g => g.Id == id).First();
+            var game = await _gameRepository.GetFirstByFilterAsync(g => g.Id == id);
+
             if (game != null)
                 game.StartedAt = DateTime.Now;
-            _gameRepository.Update(game);
-            await _gameRepository.SaveChangesAsync();
+
+            await _gameRepository.UpdateAsync(game);
         }
 
         public async Task FinishGame(int id)
         {
-            var game = _gameRepository.Get(g => g.Id == id).First();
+            var game = await _gameRepository.GetFirstByFilterAsync(g => g.Id == id);
             if (game != null)
             {
                 game.FinishedAt = DateTime.Now;
                 game.Code = null;
             }
-            _gameRepository.Update(game);
-            await _gameRepository.SaveChangesAsync();
+
+            await _gameRepository.UpdateAsync(game);
         }
 
-        public int FindActiveGameIdByCode(string gameCode)
+        public async Task<int> FindActiveGameIdByCode(string gameCode)
         {
-            return _gameRepository.GetActiveGameIdByCode(gameCode);
+            return await _gameRepository.GetActiveGameIdByCode(gameCode);
         }
 
         public bool IsUserGameOwner(int? userId, int gameId)
@@ -81,13 +78,13 @@ namespace Core.Services
             if (userId == null)
                 return false;
 
-            var game = _gameRepository.Get(g => g.Id == gameId && g.MasterId == userId).FirstOrDefault();
+            var game = _gameRepository.GetFirstByFilterAsync(g => g.Id == gameId && g.MasterId == userId);
             return game != null;
         }
 
-        public int FindOwnedActiveGameId(string gameCode, int userId)
+        public async Task<int> FindOwnedActiveGameId(string gameCode, int userId)
         {
-            return _gameRepository.GetOwnedActiveGameIdByCode(gameCode, userId);
+            return await _gameRepository.GetOwnedActiveGameIdByCode(gameCode, userId);
         }
 
         public async Task<(int ratingsCount, int expectedRatingsCount)> GetVotingStatus(int gameId, int itemId)
