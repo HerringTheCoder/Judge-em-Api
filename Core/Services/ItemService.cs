@@ -26,21 +26,19 @@ namespace Core.Services
             ImageLink = request.ImageLink,
             GameId = gameId
             };
-            _itemRepository.Add(item);
-            await _itemRepository.SaveChangesAsync();
+
+            await _itemRepository.AddAsync(item);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var item = _itemRepository.Get(i => i.Id == id).FirstOrDefault();
-            _itemRepository.Delete(item);
-            await _itemRepository.SaveChangesAsync();
+            var item = await _itemRepository.GetFirstByFilterAsync(i => i.Id == id);
+            await _itemRepository.DeleteAsync(item);
         }
 
         public async Task<IEnumerable<Item>> GetItemsByGameId(int gameId)
         {
-            var items = await _itemRepository.Get(g => g.GameId == gameId).ToListAsync();
-            return items;
+            return await _itemRepository.GetByFilterAsync(g => g.GameId == gameId);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace WebApi.Hubs
         public async Task ConnectToGame(string gameCode, string nickname)
         {
             _logger.LogInformation($"Client with connection id: {Context.ConnectionId} is attempting connection using code: {gameCode} under nickname: {nickname}");
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            var gameId = await _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
                 int? userId = Context.UserIdentifier != null ? (int?)int.Parse(Context.UserIdentifier) : null;
@@ -97,7 +97,7 @@ namespace WebApi.Hubs
 
         public async Task DisconnectFromGame(string gameCode)
         {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            var gameId = await _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
                 _logger.LogInformation($"Connection:{Context.ConnectionId} is leaving group {gameCode}");
@@ -125,7 +125,7 @@ namespace WebApi.Hubs
 
         public async Task AddItem(ItemCreateRequest request, string gameCode)
         {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            var gameId = await _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
                 await _itemService.Add(request, gameId);
@@ -140,7 +140,7 @@ namespace WebApi.Hubs
 
         public async Task RemoveItem(int itemId, string gameCode)
         {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            var gameId = await _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
                 await _itemService.DeleteAsync(itemId);
@@ -155,7 +155,7 @@ namespace WebApi.Hubs
 
         public async Task AddRating(string gameCode, RatingCreateRequest request)
         {
-            var gameId = _gameService.FindActiveGameIdByCode(gameCode);
+            var gameId = await _gameService.FindActiveGameIdByCode(gameCode);
             if (gameId != 0)
             {
                 if (int.TryParse(Context.UserIdentifier, out int userId) && userId != 0)

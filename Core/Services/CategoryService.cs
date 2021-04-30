@@ -18,10 +18,7 @@ namespace Core.Services
         }
         public async Task<List<Category>> GetCategoriesByGameId(int gameId)
         {
-            var categories = await _categoryRepository
-                .GetAll()
-                .Where(c => c.GameId == gameId)
-                .ToListAsync();
+            var categories = await _categoryRepository.GetByFilterAsync(c => c.GameId == gameId);
 
             return categories;
         }
@@ -33,8 +30,7 @@ namespace Core.Services
                 Name = request.Name,
                 Weight = request.Weight
             };
-            _categoryRepository.Add(category);
-            await _categoryRepository.SaveChangesAsync();
+            await _categoryRepository.AddAsync(category);
             return category;
         }
 
@@ -49,17 +45,16 @@ namespace Core.Services
                     Weight = categoryRequest.Weight,
                     GameId = categoryRequest.GameId
                 };
-                _categoryRepository.Add(category);
                 categories.Add(category);
             }
-            await _categoryRepository.SaveChangesAsync();
-            return categories;
+
+            return await _categoryRepository.AddRangeAsync(categories);
         }
 
         public async Task<List<Category>> UpdateCategories(List<CategoryUpdateRequest> categoryRequests)
         {
             var categoryIds = categoryRequests.Select(cr => cr.Id);
-            var categories = _categoryRepository.GetAll().Where(c => categoryIds.Contains(c.Id)).ToList();
+            var categories = await _categoryRepository.GetByFilterAsync(c => categoryIds.Contains(c.Id));
             foreach (var category in categories)
             {
                 var categoryRequest = categoryRequests.Find(cr => cr.Id == category.Id);
@@ -69,19 +64,15 @@ namespace Core.Services
                     category.Weight = categoryRequest.Weight;
                     category.GameId = categoryRequest.GameId;
                 }
-
-                _categoryRepository.Update(category);
             }
 
-            await _categoryRepository.SaveChangesAsync();
-            return categories;
+            return await _categoryRepository.UpdateRangeAsync(categories);
         }
 
         public async Task DeleteCategory(int id)
         {
-            var category = _categoryRepository.Get(c => c.Id == id).FirstOrDefault();
-            _categoryRepository.Delete(category);
-            await _categoryRepository.SaveChangesAsync();
+            var category = await _categoryRepository.GetFirstByFilterAsync(c => c.Id == id);
+            await _categoryRepository.DeleteAsync(category);
         }
     }
 }

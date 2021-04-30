@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Storage.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Storage.Repositories.Interfaces;
 
 namespace Storage.Repositories
 {
@@ -14,37 +15,64 @@ namespace Storage.Repositories
     {
         protected TContext Context;
 
-        public BaseRepository(TContext context)
+        protected BaseRepository(TContext context)
         {
             Context = context;
         }
 
-        public virtual IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> predicate)
+        public virtual async Task<List<TEntity>> GetByFilterAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return Context.Set<TEntity>().Where(predicate);
+            return await Context.Set<TEntity>().Where(predicate).ToListAsync();
         }
 
-        public virtual void Add(TEntity entity)
+        public async Task<TEntity> GetFirstByFilterAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            Context.Set<TEntity>().Add(entity);
+            return await Context.Set<TEntity>().Where(predicate).FirstOrDefaultAsync();
         }
 
-        public virtual void Delete(TEntity entity)
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        {
+            await Context.Set<TEntity>().AddAsync(entity);
+            await SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<List<TEntity>> AddRangeAsync(List<TEntity> entities)
+        {
+            await Context.Set<TEntity>().AddRangeAsync(entities);
+            await SaveChangesAsync();
+
+            return entities;
+        }
+
+        public virtual async Task DeleteAsync(TEntity entity)
         {
             Context.Set<TEntity>().Remove(entity);
+            await SaveChangesAsync();
         }
 
-        public virtual void Update(TEntity entity)
+        public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
             Context.Entry(entity).State = EntityState.Modified;
+            await SaveChangesAsync();
+
+            return entity;
         }
 
-        public virtual IQueryable<TEntity> GetAll()
+        public async Task<List<TEntity>> UpdateRangeAsync(List<TEntity> entities)
         {
-            return Context.Set<TEntity>();
+            Context.Set<TEntity>().UpdateRange(entities);
+            await SaveChangesAsync();
+
+            return entities;
         }
 
-        public async Task SaveChangesAsync()
+        public virtual async Task<List<TEntity>> GetAllAsync()
+        {
+            return await Context.Set<TEntity>().ToListAsync();
+        }
+
+        protected async Task SaveChangesAsync()
         {
             try
             {

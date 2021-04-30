@@ -25,10 +25,9 @@ namespace WebApi.Controllers
         [Route("{gameId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public Summary GetSummary(int gameId)
+        public async Task<Summary> GetSummary(int gameId)
         {
-            var summary =  _summaryService.GetByGameId(gameId);
-            return summary;
+            return await _summaryService.GetByGameId(gameId);
         }
 
         [HttpPost]

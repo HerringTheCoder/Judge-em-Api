@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Core.Helpers;
 using Core.Requests;
 using Core.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Storage.Repositories.Interfaces;
 using Storage.Tables;
@@ -30,18 +29,16 @@ namespace Core.Services
         public async Task AddRating(RatingCreateRequest request)
         {
             var categoryRatings = request.CategoryRatings;
-            var categories = _categoryRepository
-                .GetAll()
-                .Where(c => categoryRatings
-                    .Select(cr => cr.CategoryId)
-                    .Contains(c.Id))
-                .ToList();
+            var categories = await _categoryRepository.GetByFilterAsync(c => 
+                categoryRatings.Select(cr => cr.CategoryId).Contains(c.Id));
+
             var scoreWeights = categoryRatings.Join(categories, cr => cr.CategoryId, c => c.Id, (cr, c) => new ScoreWeight { Score = cr.Score, Weight = c.Weight }).ToList();
             float totalScore = GetTotalScore(scoreWeights);
 
             var rating = await _ratingRepository
-                .Get(r => r.PlayerProfileId == request.PlayerProfileId && r.ItemId == request.ItemId)
-                .FirstOrDefaultAsync();
+                .GetFirstByFilterAsync(r => 
+                    r.PlayerProfileId == request.PlayerProfileId &&
+                    r.ItemId == request.ItemId);
 
             if (rating == null)
             {
@@ -51,15 +48,13 @@ namespace Core.Services
                     PlayerProfileId = request.PlayerProfileId,
                     TotalScore = totalScore
                 };
-                _ratingRepository.Add(rating);
+                await _ratingRepository.AddAsync(rating);
             }
             else
             {
                 rating.TotalScore = totalScore;
-                _ratingRepository.Update(rating);
+                await _ratingRepository.UpdateAsync(rating);
             }
-
-            await _ratingRepository.SaveChangesAsync();
             await AddCategoryRatings(categoryRatings, rating.Id);
         }
 
@@ -75,9 +70,8 @@ namespace Core.Services
         {
             try
             {
-                var oldCategoryRatings = _categoryRatingRepository.GetAll()
-                    .Where(ocr => ocr.RatingId == ratingId)
-                    .ToList();
+                var oldCategoryRatings = await _categoryRatingRepository.GetByFilterAsync(ocr => ocr.RatingId == ratingId);
+
                 foreach (var categoryRating in categoryRatings)
                 {
                     int categoryId = categoryRating.CategoryId;
@@ -85,11 +79,11 @@ namespace Core.Services
                     {
                         var oldCategoryRating = oldCategoryRatings.First(ocr => ocr.CategoryId == categoryId);
                         oldCategoryRating.Score = categoryRating.Score;
-                        _categoryRatingRepository.Update(oldCategoryRating);
+                        await _categoryRatingRepository.UpdateAsync(oldCategoryRating);
                     }
                     else
                     {
-                        _categoryRatingRepository.Add(new CategoryRating
+                        await _categoryRatingRepository.AddAsync(new CategoryRating
                         {
                             Score = categoryRating.Score,
                             CategoryId = categoryRating.CategoryId,
@@ -100,11 +94,9 @@ namespace Core.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("CategoryRating write error");
+                _logger.LogError($"{nameof(CategoryRating)} write error");
                 _logger.LogError(ex.Message);
             }
-
-            await _ratingRepository.SaveChangesAsync();
         }
 
     }
